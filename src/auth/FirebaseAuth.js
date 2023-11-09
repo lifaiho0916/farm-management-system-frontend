@@ -1,13 +1,13 @@
-import { initializeApp } from "firebase/app"
-import { getFirestore } from 'firebase/firestore/lite';
-import { 
-	getAuth, 
-	signInWithEmailAndPassword,
-	createUserWithEmailAndPassword,
-	signOut,
-	signInWithPopup,
-	GoogleAuthProvider,
-	FacebookAuthProvider
+import {initializeApp} from "firebase/app"
+import {getFirestore} from 'firebase/firestore/lite';
+import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    signOut,
+    signInWithPopup,
+    GoogleAuthProvider,
+    FacebookAuthProvider
 } from 'firebase/auth'
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
@@ -23,15 +23,15 @@ const googleAuthProvider = new GoogleAuthProvider();
 const facebookAuthProvider = new FacebookAuthProvider();
 
 export {
-	db,
-	auth,
-	currentUser,
-	googleAuthProvider,
-	GoogleAuthProvider,
-	facebookAuthProvider,
-	FacebookAuthProvider,
-	signInWithEmailAndPassword,
-	signOut,
-	signInWithPopup,
-	createUserWithEmailAndPassword
+    db,
+    auth,
+    currentUser,
+    googleAuthProvider,
+    GoogleAuthProvider,
+    facebookAuthProvider,
+    FacebookAuthProvider,
+    signInWithEmailAndPassword,
+    signOut,
+    signInWithPopup,
+    createUserWithEmailAndPassword
 };

@@ -1,5 +1,5 @@
 import React from 'react'
-import { AUTH_PREFIX_PATH, APP_PREFIX_PATH } from 'configs/AppConfig'
+import {AUTH_PREFIX_PATH, APP_PREFIX_PATH} from 'configs/AppConfig'
 
 export const publicRoutes = [
     {

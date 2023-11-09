@@ -1,4 +1,4 @@
-import { css } from '@emotion/react';
+import {css} from '@emotion/react';
 
 export const codeBoxCss = token => css`
 	position: relative;

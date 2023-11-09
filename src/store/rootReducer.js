@@ -1,4 +1,4 @@
-import { combineReducers } from 'redux'
+import {combineReducers} from 'redux'
 import theme from './slices/themeSlice'
 import auth from './slices/authSlice'
 
@@ -10,5 +10,5 @@ const rootReducer = (asyncReducers) => (state, action) => {
     })
     return combinedReducer(state, action)
 }
-  
+
 export default rootReducer

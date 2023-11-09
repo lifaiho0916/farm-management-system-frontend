@@ -1,10 +1,10 @@
 import React from 'react';
-import { Spin } from 'antd';
+import {Spin} from 'antd';
 import PropTypes from 'prop-types'
-import { LoadingOutlined } from '@ant-design/icons';
+import {LoadingOutlined} from '@ant-design/icons';
 import styled from '@emotion/styled';
 
-const Icon = <LoadingOutlined style={{ fontSize: 35 }} spin />
+const Icon = <LoadingOutlined style={{fontSize: 35}} spin/>
 
 const LoadingWrapper = styled('div')`
 	${props => props.cover === 'content' ? `
@@ -12,7 +12,7 @@ const LoadingWrapper = styled('div')`
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
-	` : '' }
+	` : ''}
 
 	${props => props.cover === 'page' ? `
 		position: fixed;
@@ -21,26 +21,26 @@ const LoadingWrapper = styled('div')`
 		display: flex;
 		align-items: center;
 		justify-content: center;
-	` : '' }
+	` : ''}
 `
 
 const Loading = (props) => {
-	const { align, cover = 'content' } = props
-	return (
-		<LoadingWrapper className={`${align ? `text-${align}` : ''}`} cover={cover}>
-			<Spin indicator={Icon} />
-		</LoadingWrapper>
-	)
+    const {align, cover = 'content'} = props
+    return (
+        <LoadingWrapper className={`${align ? `text-${align}` : ''}`} cover={cover}>
+            <Spin indicator={Icon}/>
+        </LoadingWrapper>
+    )
 }
 
 Loading.propTypes = {
-	size: PropTypes.string,
-	cover: PropTypes.string
+    size: PropTypes.string,
+    cover: PropTypes.string
 }
 
 Loading.defaultProps = {
-	align: 'center',
-	cover: 'inline'
+    align: 'center',
+    cover: 'inline'
 };
 
 export default Loading

@@ -1,7 +1,7 @@
 import styled from '@emotion/styled';
-import { theme } from 'antd';
+import {theme} from 'antd';
 
-const { useToken } = theme
+const {useToken} = theme
 
 const StyledApiContainer = styled('div')`
     background-color:${({token}) => token.colorBgContainer};
@@ -125,7 +125,7 @@ const StyledApiContainer = styled('div')`
 
 const Container = ({children, gutterLess = false}) => {
 
-    const { token } = useToken();
+    const {token} = useToken();
 
     return (
         <StyledApiContainer token={token} gutterLess={gutterLess}>

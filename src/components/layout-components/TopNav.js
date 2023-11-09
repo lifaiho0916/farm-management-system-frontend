@@ -1,10 +1,10 @@
 import React from 'react'
-import { connect } from 'react-redux';
-import { NAV_TYPE_TOP } from 'constants/ThemeConstant';
+import {connect} from 'react-redux';
+import {NAV_TYPE_TOP} from 'constants/ThemeConstant';
 import utils from 'utils'
 import MenuContent from './MenuContent'
 import styled from '@emotion/styled';
-import { TEMPLATE, WHITE, GRAY } from 'constants/ThemeConstant';
+import {TEMPLATE, WHITE, GRAY} from 'constants/ThemeConstant';
 
 const TopNvContent = styled('div')`
 	height: ${TEMPLATE.HEADER_HEIGHT}px;
@@ -36,7 +36,7 @@ const TopNvContent = styled('div')`
 				color: rgba(255, 255, 255, 0.75)
 			}
 		}
-    ` : '' }
+    ` : ''}
 
 	${props => props.mode === 'dark' ? `
 		.ant-menu {
@@ -48,26 +48,26 @@ const TopNvContent = styled('div')`
 				color: rgba(0, 0, 0, 0.75)
 			}
 		}
-    ` : '' }
+    ` : ''}
 `
 
-export const TopNav = ({topNavColor }) => {
-	const props = { topNavColor }
-	return (
-		<TopNvContent mode={utils.getColorContrast(topNavColor)} backgroundColor={topNavColor}>
-			<div className="top-nav-wrapper">
-				<MenuContent
-					type={NAV_TYPE_TOP} 
-					{...props}
-				/>
-			</div>
-		</TopNvContent>
-	)
+export const TopNav = ({topNavColor}) => {
+    const props = {topNavColor}
+    return (
+        <TopNvContent mode={utils.getColorContrast(topNavColor)} backgroundColor={topNavColor}>
+            <div className="top-nav-wrapper">
+                <MenuContent
+                    type={NAV_TYPE_TOP}
+                    {...props}
+                />
+            </div>
+        </TopNvContent>
+    )
 }
 
-const mapStateToProps = ({ theme }) => {
-  const { topNavColor } =  theme;
-  return { topNavColor }
+const mapStateToProps = ({theme}) => {
+    const {topNavColor} = theme;
+    return {topNavColor}
 };
 
 export default connect(mapStateToProps)(TopNav);

@@ -1,19 +1,18 @@
+import {createServer} from 'miragejs'
+import {API_BASE_URL} from 'configs/AppConfig';
 
-import { createServer } from 'miragejs'
-import { API_BASE_URL } from 'configs/AppConfig';
+import {signInUserData} from './data/authData'
 
-import { signInUserData } from './data/authData'
+import {authFakeApi} from './fakeApi'
 
-import { authFakeApi } from './fakeApi'
-
-export default function mockServer({ environment = 'test' }) {
+export default function mockServer({environment = 'test'}) {
     return createServer({
         environment,
         seeds(server) {
-			server.db.loadData({
-				signInUserData
-			})
-		},
+            server.db.loadData({
+                signInUserData
+            })
+        },
         routes() {
             this.urlPrefix = ''
             this.namespace = ''
@@ -22,8 +21,8 @@ export default function mockServer({ environment = 'test' }) {
                 return isExternal
             })
             this.passthrough()
-            
-            
+
+
             authFakeApi(this, API_BASE_URL)
         },
     })

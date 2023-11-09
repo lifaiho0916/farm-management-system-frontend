@@ -1,46 +1,46 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { THEME_CONFIG } from 'configs/AppConfig'
+import {createSlice} from '@reduxjs/toolkit'
+import {THEME_CONFIG} from 'configs/AppConfig'
 
 export const initialState = THEME_CONFIG
 
 export const themeSlice = createSlice({
-	name: 'theme',
-	initialState,
-	reducers: {
+    name: 'theme',
+    initialState,
+    reducers: {
         toggleCollapsedNav: (state, action) => {
-			state.navCollapsed = action.payload
-		},
+            state.navCollapsed = action.payload
+        },
         onNavStyleChange: (state, action) => {
-			state.sideNavTheme = action.payload
-		},
+            state.sideNavTheme = action.payload
+        },
         onLocaleChange: (state, action) => {
-			state.locale = action.payload
-		},
+            state.locale = action.payload
+        },
         onNavTypeChange: (state, action) => {
-			state.navType = action.payload
-		},
+            state.navType = action.payload
+        },
         onTopNavColorChange: (state, action) => {
-			state.topNavColor = action.payload
-		},
+            state.topNavColor = action.payload
+        },
         onHeaderNavColorChange: (state, action) => {
-			state.headerNavColor = action.payload
-		},
+            state.headerNavColor = action.payload
+        },
         onMobileNavToggle: (state, action) => {
-			state.mobileNav = action.payload
-		},
+            state.mobileNav = action.payload
+        },
         onSwitchTheme: (state, action) => {
-			state.currentTheme = action.payload
-		},
+            state.currentTheme = action.payload
+        },
         onDirectionChange: (state, action) => {
-			state.direction = action.payload
-		},
-		onBlankLayout: (state, action) => {
-			state.blankLayout = action.payload
-		},
-	},
+            state.direction = action.payload
+        },
+        onBlankLayout: (state, action) => {
+            state.blankLayout = action.payload
+        },
+    },
 })
 
-export const { 
+export const {
     toggleCollapsedNav,
     onNavStyleChange,
     onLocaleChange,
@@ -50,7 +50,7 @@ export const {
     onMobileNavToggle,
     onSwitchTheme,
     onDirectionChange,
-	onBlankLayout
+    onBlankLayout
 } = themeSlice.actions
 
 export default themeSlice.reducer
