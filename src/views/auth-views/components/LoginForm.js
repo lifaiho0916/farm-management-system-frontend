@@ -1,10 +1,10 @@
 import React, {useEffect} from 'react';
 import {connect} from 'react-redux';
-import {Button, Form, Input, /*Divider,*/ Alert} from 'antd';
+import {Button, Form, Input, Divider, Alert} from 'antd';
 import {MailOutlined, LockOutlined} from '@ant-design/icons';
 import PropTypes from 'prop-types';
-// import {GoogleSVG, FacebookSVG} from 'assets/svg/icon';
-// import CustomIcon from 'components/util-components/CustomIcon'
+import {GoogleSVG, FacebookSVG} from 'assets/svg/icon';
+import CustomIcon from 'components/util-components/CustomIcon'
 import {
     signIn,
     showLoading,
@@ -21,13 +21,13 @@ export const LoginForm = props => {
     const navigate = useNavigate();
 
     const {
-        // otherSignIn,
+        otherSignIn,
         showForgetPassword,
         hideAuthMessage,
         onForgetPasswordClick,
         showLoading,
-        // signInWithGoogle,
-        // signInWithFacebook,
+        signInWithGoogle,
+        signInWithFacebook,
         extra,
         signIn,
         token,
@@ -48,15 +48,15 @@ export const LoginForm = props => {
         signIn(values);
     };
 
-    // const onGoogleLogin = () => {
-    //     showLoading()
-    //     signInWithGoogle()
-    // }
+    const onGoogleLogin = () => {
+        showLoading()
+        signInWithGoogle()
+    }
 
-    // const onFacebookLogin = () => {
-    //     showLoading()
-    //     signInWithFacebook()
-    // }
+    const onFacebookLogin = () => {
+        showLoading()
+        signInWithFacebook()
+    }
 
     useEffect(() => {
         if (token !== null && allowRedirect) {
@@ -70,30 +70,30 @@ export const LoginForm = props => {
         }
     });
 
-    // const renderOtherSignIn = (
-    //     <div>
-    //         <Divider>
-    //             <span className="text-muted font-size-base font-weight-normal">or connect with</span>
-    //         </Divider>
-    //         <div className="d-flex justify-content-center">
-    //             <Button
-    //                 onClick={() => onGoogleLogin()}
-    //                 className="mr-2"
-    //                 disabled={loading}
-    //                 icon={<CustomIcon svg={GoogleSVG}/>}
-    //             >
-    //                 Google
-    //             </Button>
-    //             <Button
-    //                 onClick={() => onFacebookLogin()}
-    //                 icon={<CustomIcon svg={FacebookSVG}/>}
-    //                 disabled={loading}
-    //             >
-    //                 Facebook
-    //             </Button>
-    //         </div>
-    //     </div>
-    // )
+    const renderOtherSignIn = (
+        <div>
+            <Divider>
+                <span className="text-muted font-size-base font-weight-normal">or connect with</span>
+            </Divider>
+            <div className="d-flex justify-content-center">
+                <Button
+                    onClick={() => onGoogleLogin()}
+                    className="mr-2"
+                    disabled={loading}
+                    icon={<CustomIcon svg={GoogleSVG}/>}
+                >
+                    Google
+                </Button>
+                <Button
+                    onClick={() => onFacebookLogin()}
+                    icon={<CustomIcon svg={FacebookSVG}/>}
+                    disabled={loading}
+                >
+                    Facebook
+                </Button>
+            </div>
+        </div>
+    )
 
     return (
         <>
@@ -157,9 +157,9 @@ export const LoginForm = props => {
                         Sign In
                     </Button>
                 </Form.Item>
-                {/* {
+                {
                     otherSignIn ? renderOtherSignIn : null
-                } */}
+                }
                 {extra}
             </Form>
         </>

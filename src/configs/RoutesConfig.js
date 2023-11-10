@@ -1,5 +1,5 @@
 import React from 'react'
-import {AUTH_PREFIX_PATH, APP_PREFIX_PATH} from 'configs/AppConfig'
+import { AUTH_PREFIX_PATH, APP_PREFIX_PATH } from 'configs/AppConfig'
 
 export const publicRoutes = [
     {
@@ -24,5 +24,15 @@ export const protectedRoutes = [
         key: 'dashboard.default',
         path: `${APP_PREFIX_PATH}/dashboards/default`,
         component: React.lazy(() => import('views/app-views/dashboards/default')),
+    },
+    {
+        key: 'users',
+        path: `${APP_PREFIX_PATH}/users`,
+        component: React.lazy(() => import('views/app-views/users')),
+    },
+    {
+        key: 'farms',
+        path: `${APP_PREFIX_PATH}/farms`,
+        component: React.lazy(() => import('views/app-views/farms')),
     }
 ]

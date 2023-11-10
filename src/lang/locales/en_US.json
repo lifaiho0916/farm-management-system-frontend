@@ -1,6 +1,8 @@
 {
   "home": "Home",
   "sidenav.dashboard": "Dashboard",
+  "sidenav.users": "Users",
+  "sidenav.farms": "Farms",
   "sidenav.dashboard.default": "Default",
   "sidenav.dashboard.analytic": "Analytic",
   "sidenav.dashboard.sales": "Sales",
