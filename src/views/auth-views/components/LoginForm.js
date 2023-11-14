@@ -38,10 +38,6 @@ export const LoginForm = props => {
         allowRedirect = true
     } = props
 
-    const initialCredential = {
-        email: 'user1@themenate.net',
-        password: '2005ipo'
-    }
 
     const onLogin = values => {
         showLoading()
@@ -108,7 +104,7 @@ export const LoginForm = props => {
             <Form
                 layout="vertical"
                 name="login-form"
-                initialValues={initialCredential}
+                // initialValues={initialCredential}
                 onFinish={onLogin}
             >
                 <Form.Item

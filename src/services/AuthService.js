@@ -1,35 +1,21 @@
-import fetch from 'auth/FetchInterceptor'
+import Service from 'auth/FetchInterceptor'
 
 const AuthService = {}
 
 AuthService.login = function (data) {
-    return fetch({
-        url: '/auth/login',
-        method: 'post',
-        data: data
-    })
+    return Service.post('/auth/signin', data)
 }
 
 AuthService.register = function (data) {
-    return fetch({
-        url: '/auth/register',
-        method: 'post',
-        data: data
-    })
+    return Service.post('/auth/signup', data)
 }
 
 AuthService.logout = function () {
     return fetch({
-        url: '/auth/logout',
+        url: '/auth/signout',
         method: 'post'
     })
 }
 
-AuthService.loginInOAuth = function () {
-    return fetch({
-        url: '/auth/loginInOAuth',
-        method: 'post'
-    })
-}
 
 export default AuthService;

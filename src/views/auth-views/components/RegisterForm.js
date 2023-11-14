@@ -1,10 +1,10 @@
-import React, {useEffect} from 'react'
-import {connect} from 'react-redux'
-import {LockOutlined, MailOutlined} from '@ant-design/icons';
-import {Button, Form, Input, Alert} from "antd";
-import {signUp, showAuthMessage, showLoading, hideAuthMessage} from 'store/slices/authSlice';
-import {useNavigate} from 'react-router-dom'
-import {motion} from "framer-motion"
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux'
+import { LockOutlined, MailOutlined } from '@ant-design/icons';
+import { Button, Form, Input, Alert } from "antd";
+import { signUp, showAuthMessage, showLoading, hideAuthMessage } from 'store/slices/authSlice';
+import { useNavigate } from 'react-router-dom'
+import { motion } from "framer-motion"
 
 const rules = {
     email: [
@@ -15,6 +15,18 @@ const rules = {
         {
             type: 'email',
             message: 'Please enter a validate email!'
+        }
+    ],
+    firstName: [
+        {
+            required: true,
+            message: 'Please input your First Name'
+        }
+    ],
+    lastName: [
+        {
+            required: true,
+            message: 'Please input your Last Name'
         }
     ],
     password: [
@@ -28,7 +40,7 @@ const rules = {
             required: true,
             message: 'Please confirm your password!'
         },
-        ({getFieldValue}) => ({
+        ({ getFieldValue }) => ({
             validator(_, value) {
                 if (!value || getFieldValue('password') === value) {
                     return Promise.resolve();
@@ -80,7 +92,7 @@ export const RegisterForm = (props) => {
     return (
         <>
             <motion.div
-                initial={{opacity: 0, marginBottom: 0}}
+                initial={{ opacity: 0, marginBottom: 0 }}
                 animate={{
                     opacity: showMessage ? 1 : 0,
                     marginBottom: showMessage ? 20 : 0
@@ -94,7 +106,23 @@ export const RegisterForm = (props) => {
                     rules={rules.email}
                     hasFeedback
                 >
-                    <Input prefix={<MailOutlined className="text-primary"/>}/>
+                    <Input prefix={<MailOutlined className="text-primary" />} />
+                </Form.Item>
+                <Form.Item
+                    name="firstName"
+                    label="First Name"
+                    rules={rules.firstName}
+                    hasFeedback
+                >
+                    <Input />
+                </Form.Item>
+                <Form.Item
+                    name="lastName"
+                    label="Last Name"
+                    rules={rules.lastName}
+                    hasFeedback
+                >
+                    <Input />
                 </Form.Item>
                 <Form.Item
                     name="password"
@@ -102,7 +130,7 @@ export const RegisterForm = (props) => {
                     rules={rules.password}
                     hasFeedback
                 >
-                    <Input.Password prefix={<LockOutlined className="text-primary"/>}/>
+                    <Input.Password prefix={<LockOutlined className="text-primary" />} />
                 </Form.Item>
                 <Form.Item
                     name="confirm"
@@ -110,7 +138,7 @@ export const RegisterForm = (props) => {
                     rules={rules.confirm}
                     hasFeedback
                 >
-                    <Input.Password prefix={<LockOutlined className="text-primary"/>}/>
+                    <Input.Password prefix={<LockOutlined className="text-primary" />} />
                 </Form.Item>
                 <Form.Item>
                     <Button type="primary" htmlType="submit" block loading={loading}>
@@ -122,9 +150,9 @@ export const RegisterForm = (props) => {
     )
 }
 
-const mapStateToProps = ({auth}) => {
-    const {loading, message, showMessage, token, redirect} = auth;
-    return {loading, message, showMessage, token, redirect}
+const mapStateToProps = ({ auth }) => {
+    const { loading, message, showMessage, token, redirect } = auth;
+    return { loading, message, showMessage, token, redirect }
 }
 
 const mapDispatchToProps = {
