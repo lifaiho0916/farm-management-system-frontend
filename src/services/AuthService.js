@@ -2,12 +2,22 @@ import Service from 'auth/FetchInterceptor'
 
 const AuthService = {}
 
-AuthService.login = function (data) {
-    return Service.post('/auth/signin', data)
+AuthService.login = async (data) => {
+    try {
+        const response = await Service.post('/auth/signin', data)
+        return response.data
+    } catch (err) {
+        console.log(err)
+    }
 }
 
-AuthService.register = function (data) {
-    return Service.post('/auth/signup', data)
+AuthService.register = async (data, navigate) => {
+    try {
+        const res = await Service.post('/auth/signup', data)
+        return res
+    } catch (err) {
+        console.log(err)
+    }
 }
 
 AuthService.logout = function () {

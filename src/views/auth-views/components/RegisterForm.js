@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { LockOutlined, MailOutlined } from '@ant-design/icons';
 import { Button, Form, Input, Alert } from "antd";
-import { signUp, showAuthMessage, showLoading, hideAuthMessage } from 'store/slices/authSlice';
+import { showLoading, hideLoading, hideAuthMessage } from 'store/slices/authSlice';
+import AuthService from 'services/AuthService';
 import { useNavigate } from 'react-router-dom'
 import { motion } from "framer-motion"
 
@@ -17,16 +18,10 @@ const rules = {
             message: 'Please enter a validate email!'
         }
     ],
-    firstName: [
+    name: [
         {
             required: true,
-            message: 'Please input your First Name'
-        }
-    ],
-    lastName: [
-        {
-            required: true,
-            message: 'Please input your Last Name'
+            message: 'Please input your Full Name'
         }
     ],
     password: [
@@ -51,36 +46,29 @@ const rules = {
     ]
 }
 
-export const RegisterForm = (props) => {
-
-    const {
-        signUp,
-        showLoading,
-        token,
-        loading,
-        redirect,
-        message,
-        showMessage,
-        hideAuthMessage,
-        allowRedirect = true
-    } = props
+export const RegisterForm = () => {
+    const { showMessage, loading, message } = useSelector((state) => state.auth)
     const [form] = Form.useForm();
 
     const navigate = useNavigate();
+    const dispatch = useDispatch();
 
     const onSignUp = () => {
         form.validateFields().then(values => {
-            showLoading()
-            signUp(values)
+            SignUp(values)
         }).catch(info => {
             console.log('Validate Failed:', info);
         });
     }
 
+    const SignUp = async (values) => {
+            const { email, password, name } = values
+            dispatch(showLoading())
+            await AuthService.register({ email, password, name } ,navigate)
+            dispatch(hideLoading())
+    }
+
     useEffect(() => {
-        if (token !== null && allowRedirect) {
-            navigate(redirect)
-        }
         if (showMessage) {
             const timer = setTimeout(() => hideAuthMessage(), 3000)
             return () => {
@@ -109,17 +97,9 @@ export const RegisterForm = (props) => {
                     <Input prefix={<MailOutlined className="text-primary" />} />
                 </Form.Item>
                 <Form.Item
-                    name="firstName"
-                    label="First Name"
-                    rules={rules.firstName}
-                    hasFeedback
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
-                    name="lastName"
-                    label="Last Name"
-                    rules={rules.lastName}
+                    name="name"
+                    label="Full Name"
+                    rules={rules.name}
                     hasFeedback
                 >
                     <Input />
@@ -150,16 +130,4 @@ export const RegisterForm = (props) => {
     )
 }
 
-const mapStateToProps = ({ auth }) => {
-    const { loading, message, showMessage, token, redirect } = auth;
-    return { loading, message, showMessage, token, redirect }
-}
-
-const mapDispatchToProps = {
-    signUp,
-    showAuthMessage,
-    hideAuthMessage,
-    showLoading
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(RegisterForm)
+export default RegisterForm
