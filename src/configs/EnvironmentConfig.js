@@ -1,5 +1,5 @@
 const dev = {
-    API_ENDPOINT_URL: 'http://146.71.76.68:8080/api'
+    API_ENDPOINT_URL: 'http://127.0.0.1:8080/api'
 };
 
 const prod = {

@@ -6,12 +6,9 @@ import PropTypes from 'prop-types';
 import {GoogleSVG, FacebookSVG} from 'assets/svg/icon';
 import CustomIcon from 'components/util-components/CustomIcon'
 import {
-    signIn,
     showLoading,
     showAuthMessage,
-    hideAuthMessage,
-    signInWithGoogle,
-    signInWithFacebook
+    hideAuthMessage
 } from 'store/slices/authSlice';
 import {useNavigate} from 'react-router-dom'
 import {motion} from "framer-motion"
@@ -54,17 +51,17 @@ export const LoginForm = props => {
         signInWithFacebook()
     }
 
-    useEffect(() => {
-        if (token !== null && allowRedirect) {
-            navigate(redirect)
-        }
-        if (showMessage) {
-            const timer = setTimeout(() => hideAuthMessage(), 3000)
-            return () => {
-                clearTimeout(timer);
-            };
-        }
-    });
+    // useEffect(() => {
+    //     if (token !== null && allowRedirect) {
+    //         navigate(redirect)
+    //     }
+    //     if (showMessage) {
+    //         const timer = setTimeout(() => hideAuthMessage(), 3000)
+    //         return () => {
+    //             clearTimeout(timer);
+    //         };
+    //     }
+    // });
 
     const renderOtherSignIn = (
         <div>
@@ -176,18 +173,4 @@ LoginForm.defaultProps = {
     showForgetPassword: false
 };
 
-const mapStateToProps = ({auth}) => {
-    const {loading, message, showMessage, token, redirect} = auth;
-    return {loading, message, showMessage, token, redirect}
-}
-
-const mapDispatchToProps = {
-    signIn,
-    showAuthMessage,
-    showLoading,
-    hideAuthMessage,
-    signInWithGoogle,
-    signInWithFacebook
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(LoginForm)
+export default LoginForm

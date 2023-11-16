@@ -10,7 +10,6 @@ import {
 } from '@ant-design/icons';
 import NavItem from './NavItem';
 import Flex from 'components/shared-components/Flex';
-import {signOut} from 'store/slices/authSlice';
 import styled from '@emotion/styled';
 import {FONT_WEIGHT, MEDIA_QUERIES, SPACER, FONT_SIZES} from 'constants/ThemeConstant'
 
@@ -51,7 +50,6 @@ const MenuItemSignOut = (props) => {
     const dispatch = useDispatch();
 
     const handleSignOut = () => {
-        dispatch(signOut())
     }
 
     return (

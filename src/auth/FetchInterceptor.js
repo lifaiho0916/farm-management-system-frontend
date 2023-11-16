@@ -1,9 +1,9 @@
 import axios from 'axios';
-import {API_BASE_URL} from 'configs/AppConfig';
-import {signOutSuccess} from 'store/slices/authSlice';
+import { API_BASE_URL } from 'configs/AppConfig';
+import { signOutSuccess } from 'store/slices/authSlice';
 import store from '../store';
-import {AUTH_TOKEN} from 'constants/AuthConstant';
-import {notification} from 'antd';
+import { AUTH_TOKEN } from 'constants/AuthConstant';
+import { notification } from 'antd';
 
 const unauthorizedCode = [400, 401, 403]
 
@@ -36,7 +36,6 @@ service.interceptors.request.use(config => {
 service.interceptors.response.use((response) => {
     return response.data
 }, (error) => {
-
     let notificationParam = {
         message: ''
     }
@@ -44,7 +43,7 @@ service.interceptors.response.use((response) => {
     // Remove token and redirect
     if (unauthorizedCode.includes(error.response.status)) {
         notificationParam.message = 'Authentication Fail'
-        notificationParam.description = 'Please login again'
+        notificationParam.description = error.response.data.message
         localStorage.removeItem(AUTH_TOKEN)
 
         store.dispatch(signOutSuccess())
