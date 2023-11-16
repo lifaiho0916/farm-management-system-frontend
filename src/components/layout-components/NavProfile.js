@@ -1,17 +1,14 @@
 import React from 'react';
-import {Dropdown, Avatar} from 'antd';
-import {useDispatch} from 'react-redux'
-import {
-    EditOutlined,
-    SettingOutlined,
-    ShopOutlined,
-    QuestionCircleOutlined,
-    LogoutOutlined
-} from '@ant-design/icons';
+import { Dropdown, Avatar } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { LogoutOutlined } from '@ant-design/icons';
+import { signOutSuccess } from 'store/slices/authSlice';
+import { notification } from 'antd';
 import NavItem from './NavItem';
 import Flex from 'components/shared-components/Flex';
 import styled from '@emotion/styled';
-import {FONT_WEIGHT, MEDIA_QUERIES, SPACER, FONT_SIZES} from 'constants/ThemeConstant'
+import { FONT_WEIGHT, MEDIA_QUERIES, SPACER, FONT_SIZES } from 'constants/ThemeConstant'
 
 const Icon = styled.div(() => ({
     fontSize: FONT_SIZES.LG
@@ -46,17 +43,21 @@ const Title = styled.span(() => ({
 // )
 
 const MenuItemSignOut = (props) => {
-
+    const { user } = useSelector((state) => state.auth)
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const handleSignOut = () => {
+        dispatch(signOutSuccess())
+        notification.info({ message: 'See you again!' })
+        navigate('/auth/login')
     }
 
     return (
         <div onClick={handleSignOut}>
             <Flex alignItems="center" gap={SPACER[2]}>
                 <Icon>
-                    <LogoutOutlined/>
+                    <LogoutOutlined />
                 </Icon>
                 <span>{props.label}</span>
             </Flex>
@@ -67,16 +68,16 @@ const MenuItemSignOut = (props) => {
 const items = [
     {
         key: 'Sign Out',
-        label: <MenuItemSignOut label="Sign Out"/>,
+        label: <MenuItemSignOut label="Sign Out" />,
     }
 ]
 
-export const NavProfile = ({mode}) => {
+export const NavProfile = ({ mode }) => {
     return (
-        <Dropdown placement="bottomRight" menu={{items}} trigger={["click"]}>
+        <Dropdown placement="bottomRight" menu={{ items }} trigger={["click"]}>
             <NavItem mode={mode}>
                 <Profile>
-                    <Avatar src="/img/avatars/thumb-1.jpg"/>
+                    <Avatar src="/img/avatars/thumb-1.jpg" />
                     <UserInfo className="profile-text">
                         <Name>Charlie Howard</Name>
                         <Title>Frontend Developer</Title>

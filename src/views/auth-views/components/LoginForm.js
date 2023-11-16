@@ -1,176 +1,92 @@
-import React, {useEffect} from 'react';
-import {connect} from 'react-redux';
-import {Button, Form, Input, Divider, Alert} from 'antd';
-import {MailOutlined, LockOutlined} from '@ant-design/icons';
-import PropTypes from 'prop-types';
-import {GoogleSVG, FacebookSVG} from 'assets/svg/icon';
-import CustomIcon from 'components/util-components/CustomIcon'
-import {
-    showLoading,
-    showAuthMessage,
-    hideAuthMessage
-} from 'store/slices/authSlice';
-import {useNavigate} from 'react-router-dom'
-import {motion} from "framer-motion"
+import React, { useState } from 'react';
+import { Button, Form, Input } from 'antd';
+import { MailOutlined, LockOutlined } from '@ant-design/icons';
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import AuthService from 'services/AuthService';
+import { useDispatch } from 'react-redux';
+import { signInSuccess } from 'store/slices/authSlice';
+import { notification } from 'antd';
 
-export const LoginForm = props => {
-
+export const LoginForm = () => {
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const redirect = searchParams.get('redirect');
 
-    const {
-        otherSignIn,
-        showForgetPassword,
-        hideAuthMessage,
-        onForgetPasswordClick,
-        showLoading,
-        signInWithGoogle,
-        signInWithFacebook,
-        extra,
-        signIn,
-        token,
-        loading,
-        redirect,
-        showMessage,
-        message,
-        allowRedirect = true
-    } = props
+    const [isForgotPassword, setIsForgotPassword] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
 
-
-    const onLogin = values => {
-        showLoading()
-        signIn(values);
+    const onLogin = async (values) => {
+        const { email, password } = values
+        setIsLoading(true)
+        const res = await AuthService.login({ usernameOrEmail: email, password: password })
+        setIsLoading(false)
+        if (res?.accessToken) {
+            dispatch(signInSuccess(res?.accessToken))
+            notification.success({ message: 'Successfully logged in!' })
+            navigate(redirect ? redirect : '/')
+        }
+        setIsForgotPassword(true)
     };
 
-    const onGoogleLogin = () => {
-        showLoading()
-        signInWithGoogle()
+    const onForgetPasswordClick = () => {
+        navigate('/auth/forgot-password')
     }
-
-    const onFacebookLogin = () => {
-        showLoading()
-        signInWithFacebook()
-    }
-
-    // useEffect(() => {
-    //     if (token !== null && allowRedirect) {
-    //         navigate(redirect)
-    //     }
-    //     if (showMessage) {
-    //         const timer = setTimeout(() => hideAuthMessage(), 3000)
-    //         return () => {
-    //             clearTimeout(timer);
-    //         };
-    //     }
-    // });
-
-    const renderOtherSignIn = (
-        <div>
-            <Divider>
-                <span className="text-muted font-size-base font-weight-normal">or connect with</span>
-            </Divider>
-            <div className="d-flex justify-content-center">
-                <Button
-                    onClick={() => onGoogleLogin()}
-                    className="mr-2"
-                    disabled={loading}
-                    icon={<CustomIcon svg={GoogleSVG}/>}
-                >
-                    Google
-                </Button>
-                <Button
-                    onClick={() => onFacebookLogin()}
-                    icon={<CustomIcon svg={FacebookSVG}/>}
-                    disabled={loading}
-                >
-                    Facebook
-                </Button>
-            </div>
-        </div>
-    )
 
     return (
-        <>
-            <motion.div
-                initial={{opacity: 0, marginBottom: 0}}
-                animate={{
-                    opacity: showMessage ? 1 : 0,
-                    marginBottom: showMessage ? 20 : 0
-                }}>
-                <Alert type="error" showIcon message={message}></Alert>
-            </motion.div>
-            <Form
-                layout="vertical"
-                name="login-form"
-                // initialValues={initialCredential}
-                onFinish={onLogin}
-            >
-                <Form.Item
-                    name="email"
-                    label="Email"
-                    rules={[
-                        {
-                            required: true,
-                            message: 'Please input your email',
-                        },
-                        {
-                            type: 'email',
-                            message: 'Please enter a validate email!'
-                        }
-                    ]}>
-                    <Input prefix={<MailOutlined className="text-primary"/>}/>
-                </Form.Item>
-                <Form.Item
-                    name="password"
-                    label={
-                        <div
-                            className={`${showForgetPassword ? 'd-flex justify-content-between w-100 align-items-center' : ''}`}>
-                            <span>Password</span>
-                            {
-                                showForgetPassword &&
-                                <span
-                                    onClick={() => onForgetPasswordClick}
-                                    className="cursor-pointer font-size-sm font-weight-normal text-muted"
-                                >
-									Forget Password?
-								</span>
-                            }
-                        </div>
+        <Form
+            layout="vertical"
+            name="login-form"
+            onFinish={onLogin}
+        >
+            <Form.Item
+                name="email"
+                label="Email"
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input your email',
+                    },
+                    {
+                        type: 'email',
+                        message: 'Please enter a validate email!'
                     }
-                    rules={[
+                ]}>
+                <Input prefix={<MailOutlined className="text-primary" />} />
+            </Form.Item>
+            <Form.Item
+                name="password"
+                label={
+                    <div
+                        className={`${isForgotPassword ? 'd-flex justify-content-between w-100 align-items-center' : ''}`}>
+                        <span>Password</span>
                         {
-                            required: true,
-                            message: 'Please input your password',
+                            isForgotPassword &&
+                            <span
+                                onClick={onForgetPasswordClick}
+                                className="cursor-pointer font-size-sm font-weight-normal text-muted"
+                            >
+                                Forget Password?
+                            </span>
                         }
-                    ]}
-                >
-                    <Input.Password prefix={<LockOutlined className="text-primary"/>}/>
-                </Form.Item>
-                <Form.Item>
-                    <Button type="primary" htmlType="submit" block loading={loading}>
-                        Sign In
-                    </Button>
-                </Form.Item>
-                {
-                    otherSignIn ? renderOtherSignIn : null
+                    </div>
                 }
-                {extra}
-            </Form>
-        </>
+                rules={[
+                    {
+                        required: true,
+                        message: 'Please input your password',
+                    }
+                ]}
+            >
+                <Input.Password prefix={<LockOutlined className="text-primary" />} />
+            </Form.Item>
+            <Form.Item>
+                <Button type="primary" htmlType="submit" block loading={isLoading}>
+                    Sign In
+                </Button>
+            </Form.Item>
+        </Form>
     )
 }
-
-LoginForm.propTypes = {
-    otherSignIn: PropTypes.bool,
-    showForgetPassword: PropTypes.bool,
-    extra: PropTypes.oneOfType([
-        PropTypes.string,
-        PropTypes.element
-    ]),
-};
-
-LoginForm.defaultProps = {
-    otherSignIn: true,
-    showForgetPassword: false
-};
 
 export default LoginForm

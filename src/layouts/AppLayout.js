@@ -1,6 +1,6 @@
-import React, {Suspense} from 'react';
-import {connect} from 'react-redux';
-import {useLocation} from 'react-router-dom';
+import React, { Suspense, useEffect } from 'react';
+import { connect, useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import SideNav from 'components/layout-components/SideNav';
 import TopNav from 'components/layout-components/TopNav';
 import Loading from 'components/shared-components/Loading';
@@ -8,14 +8,16 @@ import MobileNav from 'components/layout-components/MobileNav'
 import HeaderNav from 'components/layout-components/HeaderNav';
 import PageHeader from 'components/layout-components/PageHeader';
 import Footer from 'components/layout-components/Footer';
-import {Layout, Grid,} from 'antd';
+import { Layout, Grid, } from 'antd';
 import navigationConfig from 'configs/NavigationConfig';
-import {TEMPLATE, MEDIA_QUERIES} from 'constants/ThemeConstant';
+import { TEMPLATE, MEDIA_QUERIES } from 'constants/ThemeConstant';
 import styled from '@emotion/styled';
+import { jwtDecode } from "jwt-decode";
+import { setAuthUser } from 'store/slices/authSlice';
 import utils from 'utils';
 
-const {Content} = Layout;
-const {useBreakpoint} = Grid;
+const { Content } = Layout;
+const { useBreakpoint } = Grid;
 
 const AppContent = styled('div')`
     padding: ${TEMPLATE.LAYOUT_CONTENT_GUTTER}px;
@@ -40,9 +42,10 @@ const AppContent = styled('div')`
     }
 `
 
-export const AppLayout = ({navCollapsed, navType, direction, children}) => {
+export const AppLayout = ({ navCollapsed, navType, direction, children, token }) => {
 
     const location = useLocation();
+    const dispatch = useDispatch();
 
     const currentRouteInfo = utils.getRouteInfo(navigationConfig, location.pathname)
     const screens = utils.getBreakPoint(useBreakpoint());
@@ -59,40 +62,47 @@ export const AppLayout = ({navCollapsed, navType, direction, children}) => {
 
     const getLayoutDirectionGutter = () => {
         if (direction === TEMPLATE.DIR_LTR) {
-            return {paddingLeft: getLayoutGutter()}
+            return { paddingLeft: getLayoutGutter() }
         }
         if (direction === TEMPLATE.DIR_RTL) {
-            return {paddingRight: getLayoutGutter()}
+            return { paddingRight: getLayoutGutter() }
         }
-        return {paddingLeft: getLayoutGutter()}
+        return { paddingLeft: getLayoutGutter() }
     }
+
+    useEffect(() => {
+        if (token) {
+            console.log(jwtDecode(token))
+        }
+    }, [token])
 
     return (
         <Layout>
-            <HeaderNav isMobile={isMobile}/>
-            {(isNavTop && !isMobile) ? <TopNav routeInfo={currentRouteInfo}/> : null}
+            <HeaderNav isMobile={isMobile} />
+            {(isNavTop && !isMobile) ? <TopNav routeInfo={currentRouteInfo} /> : null}
             <Layout>
-                {(isNavSide && !isMobile) ? <SideNav routeInfo={currentRouteInfo}/> : null}
+                {(isNavSide && !isMobile) ? <SideNav routeInfo={currentRouteInfo} /> : null}
                 <Layout style={getLayoutDirectionGutter()}>
                     <AppContent isNavTop={isNavTop}>
-                        <PageHeader display={currentRouteInfo?.breadcrumb} title={currentRouteInfo?.title}/>
+                        <PageHeader display={currentRouteInfo?.breadcrumb} title={currentRouteInfo?.title} />
                         <Content className="h-100">
-                            <Suspense fallback={<Loading cover="content"/>}>
+                            <Suspense fallback={<Loading cover="content" />}>
                                 {children}
                             </Suspense>
                         </Content>
                     </AppContent>
-                    <Footer/>
+                    <Footer />
                 </Layout>
             </Layout>
-            {isMobile && <MobileNav routeInfo={currentRouteInfo}/>}
+            {isMobile && <MobileNav routeInfo={currentRouteInfo} />}
         </Layout>
     )
 }
 
-const mapStateToProps = ({theme}) => {
-    const {navCollapsed, navType, locale} = theme;
-    return {navCollapsed, navType, locale}
+const mapStateToProps = ({ theme, auth }) => {
+    const { navCollapsed, navType, locale } = theme;
+    const { token } = auth;
+    return { navCollapsed, navType, locale, token }
 };
 
 export default connect(mapStateToProps)(React.memo(AppLayout));

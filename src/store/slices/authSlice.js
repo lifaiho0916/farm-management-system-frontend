@@ -2,6 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { AUTH_TOKEN } from 'constants/AuthConstant';
 
 export const initialState = {
+    user: null,
     loading: false,
     message: '',
     showMessage: false,
@@ -27,7 +28,7 @@ export const authSlice = createSlice({
         },
         signOutSuccess: (state) => {
             state.token = null
-            state.redirect = '/'
+            localStorage.removeItem(AUTH_TOKEN)
         },
         showLoading: (state) => {
             state.loading = true
@@ -36,7 +37,11 @@ export const authSlice = createSlice({
             state.loading = false
         },
         signInSuccess: (state, action) => {
+            localStorage.setItem(AUTH_TOKEN, action.payload)
             state.token = action.payload
+        },
+        setAuthUser: (state) => {
+            state.user = state.payload
         }
     }
 })
@@ -48,7 +53,8 @@ export const {
     signOutSuccess,
     showLoading,
     hideLoading,
-    signInSuccess
+    signInSuccess,
+    setAuthUser
 } = authSlice.actions
 
 export default authSlice.reducer
