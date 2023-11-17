@@ -40,8 +40,8 @@ export const authSlice = createSlice({
             localStorage.setItem(AUTH_TOKEN, action.payload)
             state.token = action.payload
         },
-        setAuthUser: (state) => {
-            state.user = state.payload
+        setAuthUser: (state, action) => {
+            state.user = action.payload
         }
     }
 })

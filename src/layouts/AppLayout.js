@@ -15,6 +15,7 @@ import styled from '@emotion/styled';
 import { jwtDecode } from "jwt-decode";
 import { setAuthUser } from 'store/slices/authSlice';
 import utils from 'utils';
+import UserService from 'services/UserService';
 
 const { Content } = Layout;
 const { useBreakpoint } = Grid;
@@ -70,9 +71,17 @@ export const AppLayout = ({ navCollapsed, navType, direction, children, token })
         return { paddingLeft: getLayoutGutter() }
     }
 
+    const getAuthUser = async () => {
+        const res = await UserService.authUser()
+        if (res) {
+            dispatch(setAuthUser(res))
+        }
+    }
+
     useEffect(() => {
         if (token) {
             console.log(jwtDecode(token))
+            getAuthUser()
         }
     }, [token])
 

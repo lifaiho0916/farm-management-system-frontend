@@ -43,7 +43,7 @@ const Title = styled.span(() => ({
 // )
 
 const MenuItemSignOut = (props) => {
-    const { user } = useSelector((state) => state.auth)
+
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
@@ -73,14 +73,16 @@ const items = [
 ]
 
 export const NavProfile = ({ mode }) => {
+    const { user } = useSelector((state) => state.auth)
+
     return (
         <Dropdown placement="bottomRight" menu={{ items }} trigger={["click"]}>
             <NavItem mode={mode}>
                 <Profile>
                     <Avatar src="/img/avatars/thumb-1.jpg" />
                     <UserInfo className="profile-text">
-                        <Name>Charlie Howard</Name>
-                        <Title>Frontend Developer</Title>
+                        <Name>{user ? user.name : ''}</Name>
+                        <Title>{user ? user.username : ''}</Title>
                     </UserInfo>
                 </Profile>
             </NavItem>
