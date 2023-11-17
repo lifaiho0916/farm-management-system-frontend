@@ -22,4 +22,13 @@ UserService.getUsersByAdmin = async (userId) => {
     return undefined
 }
 
+UserService.createUser = async () => {
+    try {
+        const res = await API.post(`/user`)
+        return res
+    } catch (err) {
+        console.log(err)
+    }
+    return undefined
+}
 export default UserService;
