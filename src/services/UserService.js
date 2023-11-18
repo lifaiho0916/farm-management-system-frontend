@@ -42,4 +42,14 @@ UserService.deleteUser = async (id) => {
     return undefined
 }
 
+UserService.updateUser = async (id, data) => {
+    try {
+        const res = await API.put(`/user/${id}`, data);
+        return res;
+    } catch (err) {
+        console.log(err)
+    }
+    return undefined
+}
+
 export default UserService;

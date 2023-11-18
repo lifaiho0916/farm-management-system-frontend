@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Table, Tooltip, Button, Modal, Input, Form, notification } from 'antd';
-import { EyeOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
 import UserService from 'services/UserService';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUsers } from 'store/slices/userSlice';
@@ -17,6 +17,7 @@ const UserList = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [mode, setMode] = useState(true);
+    const [selectedUser, setSelectedUser] = useState(null)
 
     const dispatch = useDispatch()
 
@@ -25,9 +26,16 @@ const UserList = () => {
     };
 
     const AddBtnClick = () => {
+        setSelectedUser(null)
         setIsModalOpen(true);
         setMode(true);
     };
+
+    const EditBtnClick = (id) => {
+        setSelectedUser(users.filter(user => user.id === id)[0])
+        setIsModalOpen(true);
+        setMode(false);
+    }
 
     const DeleteBtnClick = (id) => {
         Modal.confirm({
@@ -63,6 +71,21 @@ const UserList = () => {
         if (res) {
             notification.success({ message: "User created successfully" });
             dispatch(setUsers([...users, res]))
+            setIsModalOpen(false);
+        }
+        setIsLoading(false)
+    }
+
+    const EditUser = async (values) => {
+        setIsLoading(true)
+        const res = await UserService.updateUser(selectedUser.id, values);
+        if (res) {
+            notification.success({ message: "User updated successfully" });
+            const updatedUsers = users.map((user) => {
+                if (user.id === selectedUser.id) return res;
+                else return user
+            })
+            dispatch(setUsers(updatedUsers))
             setIsModalOpen(false);
         }
         setIsLoading(false)
@@ -181,15 +204,22 @@ const UserList = () => {
             },
         },
         {
+            title: 'Farm',
+            dataIndex: 'Fram',
+            render: () => (
+                <span></span>
+            )
+        },
+        {
             title: '',
             dataIndex: 'actions',
             render: (_, elm) => (
                 <div className="text-right d-flex justify-content-end">
                     <Tooltip title="View">
-                        <Button type="primary" className="mr-2" icon={<EyeOutlined />} onClick={() => { /*this.showUserProfile(elm)*/ }} size="small" />
+                        <Button className="mr-2" icon={<EditOutlined />} onClick={() => EditBtnClick(elm.id)} size="small" />
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <Button danger icon={<DeleteOutlined />} onClick={() => DeleteBtnClick(elm.id)} size="small" />
+                        <Button icon={<DeleteOutlined />} onClick={() => DeleteBtnClick(elm.id)} size="small" />
                     </Tooltip>
                 </div>
             )
@@ -211,27 +241,28 @@ const UserList = () => {
                     <Form
                         {...layout}
                         style={{ marginTop: 20 }}
-                        onFinish={AddUser}
+                        onFinish={mode ? AddUser : EditUser}
                     >
                         <Form.Item
                             label="Email"
                             name="email"
                             rules={[{ required: true, message: 'Please input your email!' }, { type: 'email', message: 'Please input valid email!' }]}
+                            initialValue={selectedUser?.email}
                         >
-                            <Input />
+                            <Input readOnly={!mode} defaultValue={selectedUser?.email} />
                         </Form.Item>
 
                         <Form.Item
                             label="Password"
                             name="password"
-                            rules={[{ required: true, message: 'Please input your password!' }, () => ({
+                            rules={mode ? [{ required: true, message: 'Please input your password!' }, () => ({
                                 validator(_, value) {
                                     if (value.length === 0 || value.length >= 6) {
                                         return Promise.resolve();
                                     }
                                     return Promise.reject('Minimum 6 characters');
                                 },
-                            })]}
+                            })] : []}
                         >
                             <Input.Password />
                         </Form.Item>
@@ -247,43 +278,44 @@ const UserList = () => {
                                     return Promise.reject('Minimum 4 characters');
                                 },
                             })]}
+                            initialValue={selectedUser?.name}
                         >
-                            <Input />
+                            <Input defaultValue={selectedUser?.name} />
                         </Form.Item>
 
                         <Form.Item
                             label="Phone"
                             name="phone"
                         >
-                            <Input />
+                            <Input defaultValue={selectedUser?.phone} />
                         </Form.Item>
 
                         <Form.Item
                             label="Doc"
                             name="doc"
                         >
-                            <Input />
+                            <Input defaultValue={selectedUser?.doc} />
                         </Form.Item>
 
                         <Form.Item
                             label="Address"
                             name="address"
                         >
-                            <Input />
+                            <Input defaultValue={selectedUser?.address} />
                         </Form.Item>
 
                         <Form.Item
                             label="City"
                             name="city"
                         >
-                            <Input />
+                            <Input defaultValue={selectedUser?.city} />
                         </Form.Item>
 
                         <Form.Item
                             label="Zip Code"
                             name="zipcode"
                         >
-                            <Input />
+                            <Input defaultValue={selectedUser?.zipcode} />
                         </Form.Item>
 
                         <Form.Item>

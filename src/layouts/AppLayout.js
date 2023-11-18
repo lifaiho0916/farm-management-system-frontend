@@ -80,7 +80,6 @@ export const AppLayout = ({ navCollapsed, navType, direction, children, token })
 
     useEffect(() => {
         if (token) {
-            console.log(jwtDecode(token))
             getAuthUser()
         }
     }, [token])
