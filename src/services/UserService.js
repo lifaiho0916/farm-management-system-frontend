@@ -22,13 +22,24 @@ UserService.getUsersByAdmin = async (userId) => {
     return undefined
 }
 
-UserService.createUser = async () => {
+UserService.createUser = async (data) => {
     try {
-        const res = await API.post(`/user`)
+        const res = await API.post(`/user`, data)
         return res
     } catch (err) {
         console.log(err)
     }
     return undefined
 }
+
+UserService.deleteUser = async (id) => {
+    try {
+        const res = await API.delete(`/user/${id}`)
+        return res
+    } catch (err) {
+        console.log(err)
+    }
+    return undefined
+}
+
 export default UserService;

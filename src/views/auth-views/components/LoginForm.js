@@ -10,7 +10,7 @@ import { notification } from 'antd';
 export const LoginForm = () => {
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams,] = useSearchParams();
     const redirect = searchParams.get('redirect');
 
     const [isForgotPassword, setIsForgotPassword] = useState(false)
