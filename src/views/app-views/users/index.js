@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Tooltip, Button, Modal, Input, Form, notification } from 'antd';
+import { Card, Table, Tooltip, Button, Modal, Input, Form, notification, Select } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
 import UserService from 'services/UserService';
 import { useSelector, useDispatch } from 'react-redux';
@@ -11,6 +11,8 @@ const layout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 19 },
 };
+
+const { Option } = Select;
 
 const UserList = () => {
     const { user } = useSelector(state => state.auth)
@@ -106,6 +108,10 @@ const UserList = () => {
         if (res) {
             dispatch(setFarms(res))
         }
+    }
+
+    const selectFarm = async (farmId, userId) => {
+        console.log(farmId, userId)
     }
 
     useEffect(() => {
@@ -223,8 +229,13 @@ const UserList = () => {
         {
             title: 'Farm',
             dataIndex: 'Fram',
-            render: () => (
-                <span></span>
+            render: (_, item) => (
+                <Select defaultValue={0} onChange={(value) => selectFarm(value, item.id)}>
+                    <Option value="0">Not Assigned</Option>
+                    {farms.map((farm) => (
+                        <Option value={farm.id}>{farm.description}</Option>
+                    ))}
+                </Select>
             )
         },
         {
