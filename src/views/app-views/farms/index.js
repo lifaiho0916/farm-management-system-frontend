@@ -1,22 +1,23 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Table, Tooltip, Button, Modal, Input, Form, notification } from 'antd';
-import { EyeOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
-import UserService from 'services/UserService';
+import { EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
+import FarmService from 'services/FarmService';
 import { useSelector, useDispatch } from 'react-redux';
-import { setUsers } from 'store/slices/userSlice';
+import { setFarms } from 'store/slices/farmSlice';
 
 const layout = {
     labelCol: { span: 5 },
     wrapperCol: { span: 19 },
 };
 
-const UserList = () => {
+const FarmList = () => {
     const { user } = useSelector(state => state.auth)
-    const { users } = useSelector(state => state.user)
+    const { farms } = useSelector(state => state.farm)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [mode, setMode] = useState(true);
+    const [selectedFarm, setSelectedFarm] = useState(null)
 
     const dispatch = useDispatch()
 
@@ -25,6 +26,7 @@ const UserList = () => {
     };
 
     const AddBtnClick = () => {
+        setSelectedFarm(null)
         setIsModalOpen(true);
         setMode(true);
     };
@@ -39,11 +41,11 @@ const UserList = () => {
             onOk() {
                 return new Promise(async (resolve, reject) => {
                     try {
-                        const res = await UserService.deleteUser(id);
+                        const res = await FarmService.deleteFarm(id);
                         if (res) {
-                            notification.success({ message: 'User deleted successfully' });
-                            const filtered = users.filter((user) => user.id !== id);
-                            dispatch(setUsers(filtered));
+                            notification.success({ message: 'Farm deleted successfully' });
+                            const filtered = farms.filter((farm) => farm.id !== id);
+                            dispatch(setFarms(filtered));
                             resolve();
                         } else {
                             reject();
@@ -57,34 +59,61 @@ const UserList = () => {
         });
     }
 
-    const AddUser = async (values) => {
+    const EditBtnClick = (id) => {
+        setSelectedFarm(farms.filter(farm => farm.id === id)[0])
+        setIsModalOpen(true);
+        setMode(false);
+    }
+
+    const AddFarm = async (values) => {
         setIsLoading(true)
-        const res = await UserService.createUser(values);
+        const res = await FarmService.createFarm(values);
         if (res) {
-            notification.success({ message: "User created successfully" });
-            dispatch(setUsers([...users, res]))
+            notification.success({ message: "Farm created successfully" });
+            dispatch(setFarms([...farms, res]))
             setIsModalOpen(false);
         }
         setIsLoading(false)
     }
 
-    const getUsers = async () => {
-        const res = await UserService.getUsersByAdmin(user.id)
+    const EditFarm = async (values) => {
+        setIsLoading(true)
+        const res = await FarmService.updateFarm(selectedFarm.id, values);
         if (res) {
-            dispatch(setUsers(res))
+            notification.success({ message: "Farm updated successfully" });
+            const updatedFarms = farms.map((farm) => {
+                if (farm.id === selectedFarm.id) return res;
+                else return farm
+            })
+            dispatch(setFarms(updatedFarms))
+            setIsModalOpen(false);
+        }
+        setIsLoading(false)
+    }
+
+    const getFarms = async () => {
+        const res = await FarmService.getFarmsByAdmin(user.id)
+        if (res) {
+            dispatch(setFarms(res))
         }
     }
 
     useEffect(() => {
         if (user) {
-            getUsers()
+            getFarms()
         }
     }, [user])
 
     const tableColumns = [
         {
-            title: 'Name',
-            dataIndex: 'name',
+            title: 'No',
+            render: (_, elm, index) => (
+                <span>{index + 1}</span>
+            )
+        },
+        {
+            title: 'Description',
+            dataIndex: 'description',
             render: name => (
                 <span>{name}</span>
             ),
@@ -92,34 +121,6 @@ const UserList = () => {
                 compare: (a, b) => {
                     a = a.name.toLowerCase();
                     b = b.name.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
-            title: 'E-mail',
-            dataIndex: 'email',
-            render: email => (
-                <span>{email}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.email.toLowerCase();
-                    b = b.email.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
-            title: 'Phone',
-            dataIndex: 'phone',
-            render: phone => (
-                <span>{phone}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.phone.toLowerCase();
-                    b = b.phone.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
@@ -153,6 +154,20 @@ const UserList = () => {
             },
         },
         {
+            title: 'State',
+            dataIndex: 'state',
+            render: zipcode => (
+                <span>{zipcode}</span>
+            ),
+            sorter: {
+                compare: (a, b) => {
+                    a = a.zipcode.toLowerCase();
+                    b = b.zipcode.toLowerCase();
+                    return a > b ? -1 : b > a ? 1 : 0;
+                },
+            },
+        },
+        {
             title: 'Zip Code',
             dataIndex: 'zipcode',
             render: zipcode => (
@@ -167,29 +182,15 @@ const UserList = () => {
             },
         },
         {
-            title: 'Doc',
-            dataIndex: 'doc',
-            render: doc => (
-                <span>{doc}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.doc.toLowerCase();
-                    b = b.doc.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
             title: '',
             dataIndex: 'actions',
             render: (_, elm) => (
                 <div className="text-right d-flex justify-content-end">
                     <Tooltip title="View">
-                        <Button type="primary" className="mr-2" icon={<EyeOutlined />} onClick={() => { /*this.showUserProfile(elm)*/ }} size="small" />
+                        <Button className="mr-2" icon={<EditOutlined />} onClick={() => EditBtnClick(elm.id)} size="small" />
                     </Tooltip>
                     <Tooltip title="Delete">
-                        <Button danger icon={<DeleteOutlined />} onClick={() => DeleteBtnClick(elm.id)} size="small" />
+                        <Button icon={<DeleteOutlined />} onClick={() => DeleteBtnClick(elm.id)} size="small" />
                     </Tooltip>
                 </div>
             )
@@ -200,90 +201,55 @@ const UserList = () => {
         <>
             <Card bodyStyle={{ 'padding': '10px' }}>
                 <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
-                    Add User
+                    Add Farm
                 </Button>
                 <div className="table-responsive">
-                    <Table columns={tableColumns} dataSource={users} rowKey='id' />
+                    <Table columns={tableColumns} dataSource={farms} rowKey='id' />
                 </div>
             </Card>
             {isModalOpen &&
-                <Modal title={mode ? 'Add User' : 'Edit User'} open={isModalOpen} footer={null} onCancel={handleCancel}>
+                <Modal title={mode ? 'Add Farm' : 'Edit Farm'} open={isModalOpen} footer={null} onCancel={handleCancel}>
                     <Form
                         {...layout}
                         style={{ marginTop: 20 }}
-                        onFinish={AddUser}
+                        onFinish={mode ? AddFarm : EditFarm}
                     >
-                        <Form.Item
-                            label="Email"
-                            name="email"
-                            rules={[{ required: true, message: 'Please input your email!' }, { type: 'email', message: 'Please input valid email!' }]}
-                        >
-                            <Input/>
-                        </Form.Item>
 
                         <Form.Item
-                            label="Password"
-                            name="password"
-                            rules={[{ required: true, message: 'Please input your password!' }, () => ({
-                                validator(_, value) {
-                                    if (value.length === 0 || value.length >= 6) {
-                                        return Promise.resolve();
-                                    }
-                                    return Promise.reject('Minimum 6 characters');
-                                },
-                            })]}
+                            label="Description"
+                            name="description"
+                            rules={[{ required: true, message: 'Please input your description!' }]}
+                            initialValue={selectedFarm?.description}
                         >
-                            <Input.Password />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Name"
-                            name="name"
-                            rules={[{ required: true, message: 'Please input your full name!' }, () => ({
-                                validator(_, value) {
-                                    if (value.length === 0 || value.length >= 4) {
-                                        return Promise.resolve();
-                                    }
-                                    return Promise.reject('Minimum 4 characters');
-                                },
-                            })]}
-                        >
-                            <Input />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Phone"
-                            name="phone"
-                        >
-                            <Input />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Doc"
-                            name="doc"
-                        >
-                            <Input />
+                            <Input.TextArea defaultValue={selectedFarm?.description} />
                         </Form.Item>
 
                         <Form.Item
                             label="Address"
                             name="address"
                         >
-                            <Input />
+                            <Input defaultValue={selectedFarm?.address} />
                         </Form.Item>
 
                         <Form.Item
                             label="City"
                             name="city"
                         >
-                            <Input />
+                            <Input defaultValue={selectedFarm?.city} />
+                        </Form.Item>
+
+                        <Form.Item
+                            label="State"
+                            name="state"
+                        >
+                            <Input defaultValue={selectedFarm?.state} />
                         </Form.Item>
 
                         <Form.Item
                             label="Zip Code"
                             name="zipcode"
                         >
-                            <Input />
+                            <Input defaultValue={selectedFarm?.zipcode} />
                         </Form.Item>
 
                         <Form.Item>
@@ -298,4 +264,4 @@ const UserList = () => {
     )
 }
 
-export default UserList
+export default FarmList

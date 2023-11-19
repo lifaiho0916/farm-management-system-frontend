@@ -4,6 +4,8 @@ import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-de
 import UserService from 'services/UserService';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUsers } from 'store/slices/userSlice';
+import { setFarms } from 'store/slices/farmSlice';
+import FarmService from 'services/FarmService';
 
 const layout = {
     labelCol: { span: 5 },
@@ -13,6 +15,7 @@ const layout = {
 const UserList = () => {
     const { user } = useSelector(state => state.auth)
     const { users } = useSelector(state => state.user)
+    const { farms } = useSelector(state => state.farm)
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -98,13 +101,27 @@ const UserList = () => {
         }
     }
 
+    const getFarms = async () => {
+        const res = await FarmService.getFarmsByAdmin(user.id)
+        if (res) {
+            dispatch(setFarms(res))
+        }
+    }
+
     useEffect(() => {
         if (user) {
             getUsers()
+            getFarms()
         }
     }, [user])
 
     const tableColumns = [
+        {
+            title: 'No',
+            render: (_, elm, index) => (
+                <span>{index + 1}</span>
+            )
+        },
         {
             title: 'Name',
             dataIndex: 'name',
