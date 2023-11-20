@@ -52,4 +52,14 @@ UserService.updateUser = async (id, data) => {
     return undefined
 }
 
+UserService.AssignFarm = async (data) => {
+    try {
+        const res = await API.post('/user/assign-farm', data)
+        return res;
+    } catch (err) {
+        console.log(err)
+    }
+    return undefined
+}
+
 export default UserService;

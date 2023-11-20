@@ -111,7 +111,10 @@ const UserList = () => {
     }
 
     const selectFarm = async (farmId, userId) => {
-        console.log(farmId, userId)
+        const res = await UserService.AssignFarm({ user_id: userId, farm_id: farmId });
+        if (res) {
+            notification.success({ message: 'Farm has been allocated successfully' });
+        }
     }
 
     useEffect(() => {
@@ -230,8 +233,8 @@ const UserList = () => {
             title: 'Farm',
             dataIndex: 'Fram',
             render: (_, item) => (
-                <Select defaultValue={0} onChange={(value) => selectFarm(value, item.id)}>
-                    <Option value="0">Not Assigned</Option>
+                <Select defaultValue={item.farms[0] ? item.farms[0].id : 0} onChange={(value) => selectFarm(value, item.id)}>
+                    <Option value={0}>Not Assigned</Option>
                     {farms.map((farm) => (
                         <Option value={farm.id}>{farm.description}</Option>
                     ))}
