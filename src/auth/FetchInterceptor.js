@@ -5,7 +5,7 @@ import store from '../store';
 import { AUTH_TOKEN } from 'constants/AuthConstant';
 import { notification } from 'antd';
 
-const unauthorizedCode = [400, 401, 403]
+const unauthorizedCode = [401, 403]
 
 const service = axios.create({
     baseURL: API_BASE_URL,
