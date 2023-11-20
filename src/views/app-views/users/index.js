@@ -233,7 +233,7 @@ const UserList = () => {
             title: 'Farm',
             dataIndex: 'Fram',
             render: (_, item) => (
-                <Select defaultValue={item.farms[0]?.id} onChange={(value) => selectFarm(value, item.id)}>
+                <Select defaultValue={item.farms[0] ? item.farms[0].id : 0} onChange={(value) => selectFarm(value, item.id)}>
                     <Option value={0} key={0}>Not Assigned</Option>
                     {farms.map((farm, index) => (
                         <Option key={index + 1} value={farm.id}>{farm.description}</Option>
