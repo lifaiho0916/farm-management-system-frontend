@@ -227,6 +227,7 @@ const FarmList = () => {
                         <Form.Item
                             label="Address"
                             name="address"
+                            initialValue={selectedFarm?.address}
                         >
                             <Input defaultValue={selectedFarm?.address} />
                         </Form.Item>
@@ -234,6 +235,7 @@ const FarmList = () => {
                         <Form.Item
                             label="City"
                             name="city"
+                            initialValue={selectedFarm?.city}
                         >
                             <Input defaultValue={selectedFarm?.city} />
                         </Form.Item>
@@ -241,6 +243,7 @@ const FarmList = () => {
                         <Form.Item
                             label="State"
                             name="state"
+                            initalValue={selectedFarm?.state}
                         >
                             <Input defaultValue={selectedFarm?.state} />
                         </Form.Item>
@@ -248,6 +251,7 @@ const FarmList = () => {
                         <Form.Item
                             label="Zip Code"
                             name="zipcode"
+                            initialValue={selectedFarm?.zipcode}
                         >
                             <Input defaultValue={selectedFarm?.zipcode} />
                         </Form.Item>

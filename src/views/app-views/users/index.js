@@ -317,6 +317,7 @@ const UserList = () => {
                         <Form.Item
                             label="Phone"
                             name="phone"
+                            initialValue={selectedUser?.phone}
                         >
                             <Input defaultValue={selectedUser?.phone} />
                         </Form.Item>
@@ -324,6 +325,7 @@ const UserList = () => {
                         <Form.Item
                             label="Doc"
                             name="doc"
+                            initialValue={selectedUser?.doc}
                         >
                             <Input defaultValue={selectedUser?.doc} />
                         </Form.Item>
@@ -331,6 +333,7 @@ const UserList = () => {
                         <Form.Item
                             label="Address"
                             name="address"
+                            initialValue={selectedUser?.address}
                         >
                             <Input defaultValue={selectedUser?.address} />
                         </Form.Item>
@@ -338,6 +341,7 @@ const UserList = () => {
                         <Form.Item
                             label="City"
                             name="city"
+                            initialValue={selectedUser?.city}
                         >
                             <Input defaultValue={selectedUser?.city} />
                         </Form.Item>
@@ -345,6 +349,7 @@ const UserList = () => {
                         <Form.Item
                             label="Zip Code"
                             name="zipcode"
+                            initialValue={selectedUser?.zipcode}
                         >
                             <Input defaultValue={selectedUser?.zipcode} />
                         </Form.Item>
