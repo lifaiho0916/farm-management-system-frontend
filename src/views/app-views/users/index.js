@@ -97,6 +97,7 @@ const UserList = () => {
     }
 
     const getUsers = async () => {
+        dispatch(setUsers([]))
         const res = await UserService.getUsersByAdmin(user.id)
         if (res) {
             dispatch(setUsers(res))
@@ -104,6 +105,7 @@ const UserList = () => {
     }
 
     const getFarms = async () => {
+        dispatch(setFarms([]))
         const res = await FarmService.getFarmsByAdmin(user.id)
         if (res) {
             dispatch(setFarms(res))

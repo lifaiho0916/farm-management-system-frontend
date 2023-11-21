@@ -92,6 +92,7 @@ const FarmList = () => {
     }
 
     const getFarms = async () => {
+        dispatch(setFarms([]))
         const res = await FarmService.getFarmsByAdmin(user.id)
         if (res) {
             dispatch(setFarms(res))
