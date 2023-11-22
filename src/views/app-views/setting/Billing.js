@@ -150,7 +150,7 @@ const AddNewCardForm = ({ visible, onCancel }) => {
 const Billing = () => {
   const dispatch = useDispatch();
   const { cards } = useSelector(state => state.subscription)
-  const { modalVisible, setModalVisible } = useState(false)
+  const [modalVisible, setModalVisible] = useState(false)
 
   const showModal = () => {
     setModalVisible(true)
