@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Tooltip, Button, Modal, Input, Form, notification } from 'antd';
+import { Card, Table, Tooltip, Button, Modal, Input, Form, message } from 'antd';
 import { EditOutlined, DeleteOutlined, ExclamationCircleOutlined } from '@ant-design/icons';
 import FarmService from 'services/FarmService';
 import { useSelector, useDispatch } from 'react-redux';
@@ -43,7 +43,7 @@ const FarmList = () => {
                     try {
                         const res = await FarmService.deleteFarm(id);
                         if (res) {
-                            notification.success({ message: 'Farm deleted successfully' });
+                            message.success({ content: 'Farm deleted successfully', duration: 2.5 });
                             const filtered = farms.filter((farm) => farm.id !== id);
                             dispatch(setFarms(filtered));
                             resolve();
@@ -69,7 +69,7 @@ const FarmList = () => {
         setIsLoading(true)
         const res = await FarmService.createFarm(values);
         if (res) {
-            notification.success({ message: "Farm created successfully" });
+            message.success({ content: "Farm created successfully", duration: 2.5 });
             dispatch(setFarms([...farms, res]))
             setIsModalOpen(false);
         }
@@ -80,7 +80,7 @@ const FarmList = () => {
         setIsLoading(true)
         const res = await FarmService.updateFarm(selectedFarm.id, values);
         if (res) {
-            notification.success({ message: "Farm updated successfully" });
+            message.success({ content: "Farm updated successfully", duration: 2.5 });
             const updatedFarms = farms.map((farm) => {
                 if (farm.id === selectedFarm.id) return res;
                 else return farm

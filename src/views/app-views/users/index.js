@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Tooltip, Button, Modal, Input, Form, notification, Select } from 'antd';
+import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
 import UserService from 'services/UserService';
 import { useSelector, useDispatch } from 'react-redux';
@@ -54,7 +54,7 @@ const UserList = () => {
                     try {
                         const res = await UserService.deleteUser(id);
                         if (res) {
-                            notification.success({ message: 'User deleted successfully' });
+                            message.success({ content: 'User deleted successfully', duration: 2.5 });
                             const filtered = users.filter((user) => user.id !== id);
                             dispatch(setUsers(filtered));
                             resolve();
@@ -74,7 +74,7 @@ const UserList = () => {
         setIsLoading(true)
         const res = await UserService.createUser(values);
         if (res) {
-            notification.success({ message: "User created successfully" });
+            message.success({ content: "User created successfully", duration: 2.5 });
             dispatch(setUsers([...users, res]))
             setIsModalOpen(false);
         }
@@ -85,7 +85,7 @@ const UserList = () => {
         setIsLoading(true)
         const res = await UserService.updateUser(selectedUser.id, values);
         if (res) {
-            notification.success({ message: "User updated successfully" });
+            message.success({ content: "User updated successfully", duration: 2.5 });
             const updatedUsers = users.map((user) => {
                 if (user.id === selectedUser.id) return res;
                 else return user
@@ -115,7 +115,7 @@ const UserList = () => {
     const selectFarm = async (farmId, userId) => {
         const res = await UserService.AssignFarm({ user_id: userId, farm_id: farmId });
         if (res) {
-            notification.success({ message: 'Farm has been allocated successfully' });
+            message.success({ content: 'Farm has been allocated successfully', duration: 2.5 });
         }
     }
 

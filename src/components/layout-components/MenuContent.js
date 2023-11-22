@@ -72,7 +72,7 @@ const SideNavContent = (props) => {
 
     const menuItems = useMemo(() => getSideNavMenuItem(navigationConfig), []);
 
-    return (
+    return (  
         <Menu
             mode="inline"
             theme={sideNavTheme === SIDE_NAV_LIGHT ? "light" : "dark"}

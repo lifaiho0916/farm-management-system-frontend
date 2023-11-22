@@ -22,12 +22,14 @@ AuthService.register = async (data) => {
     return undefined
 }
 
-// AuthService.logout = function () {
-//     return fetch({
-//         url: '/auth/signout',
-//         method: 'post'
-//     })
-// }
-
+AuthService.changePassword = async (data) => {
+    try {
+        const res = await API.post('/auth/change-password', data)
+        return res
+    } catch (err) {
+        console.log(err)
+    }
+    return undefined
+}
 
 export default AuthService;

@@ -34,5 +34,15 @@ export const protectedRoutes = [
         key: 'farms',
         path: `${APP_PREFIX_PATH}/farms`,
         component: React.lazy(() => import('views/app-views/farms')),
-    }
+    },
+    {
+        key: 'setting',
+        path: `${APP_PREFIX_PATH}/setting/*`,
+        component: React.lazy(() => import('views/app-views/setting')),
+    },
+    {
+        key: 'pricing',
+        path: `${APP_PREFIX_PATH}/pricing`,
+        component: React.lazy(() => import('views/app-views/pricing')),
+    },
 ]

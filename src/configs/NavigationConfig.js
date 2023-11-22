@@ -1,4 +1,4 @@
-import { DashboardOutlined, UserOutlined, TableOutlined } from '@ant-design/icons';
+import { DashboardOutlined, UserOutlined, TableOutlined, MoneyCollectOutlined } from '@ant-design/icons';
 import { APP_PREFIX_PATH } from 'configs/AppConfig'
 
 
@@ -34,6 +34,14 @@ const navigationConfig = [
         path: `${APP_PREFIX_PATH}/farms`,
         title: 'sidenav.farms',
         icon: TableOutlined,
+        breadcrumb: true,
+        submenu: []
+    },
+    {
+        key: 'pricing',
+        path: `${APP_PREFIX_PATH}/pricing`,
+        title: 'sidenav.pricing',
+        icon: MoneyCollectOutlined,
         breadcrumb: true,
         submenu: []
     }

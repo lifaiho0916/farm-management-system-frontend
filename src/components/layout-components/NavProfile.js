@@ -1,10 +1,9 @@
 import React from 'react';
-import { Dropdown, Avatar } from 'antd';
+import { Dropdown, Avatar, notification } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { LogoutOutlined } from '@ant-design/icons';
+import { LogoutOutlined, UserOutlined, SettingOutlined } from '@ant-design/icons';
 import { signOutSuccess } from 'store/slices/authSlice';
-import { notification } from 'antd';
 import NavItem from './NavItem';
 import Flex from 'components/shared-components/Flex';
 import styled from '@emotion/styled';
@@ -35,12 +34,12 @@ const Title = styled.span(() => ({
     opacity: 0.8
 }))
 
-// const MenuItem = (props) => (
-// 	<Flex as="a" href={props.path} alignItems="center" gap={SPACER[2]}>
-// 		<Icon>{props.icon}</Icon>
-// 		<span>{props.label}</span>
-// 	</Flex>
-// )
+const MenuItem = (props) => (
+	<Flex as="a" href={props.path} alignItems="center" gap={SPACER[2]}>
+		<Icon>{props.icon}</Icon>
+		<span>{props.label}</span>
+	</Flex>
+)
 
 const MenuItemSignOut = (props) => {
 
@@ -55,7 +54,7 @@ const MenuItemSignOut = (props) => {
 
     return (
         <div onClick={handleSignOut}>
-            <Flex alignItems="center" gap={SPACER[2]}>
+            <Flex alignItems="center" gap={SPACER[3]}>
                 <Icon>
                     <LogoutOutlined />
                 </Icon>
@@ -66,6 +65,10 @@ const MenuItemSignOut = (props) => {
 }
 
 const items = [
+    {
+		key: 'Account Setting',
+		label: <MenuItem path="/app/setting" label="Account Setting" icon={<SettingOutlined />} />,
+	},
     {
         key: 'Sign Out',
         label: <MenuItemSignOut label="Sign Out" />,
@@ -79,7 +82,7 @@ export const NavProfile = ({ mode }) => {
         <Dropdown placement="bottomRight" menu={{ items }} trigger={["click"]}>
             <NavItem mode={mode}>
                 <Profile>
-                    <Avatar src="/img/avatars/thumb-1.jpg" />
+                    <Avatar icon={<UserOutlined />} />
                     <UserInfo className="profile-text">
                         <Name>{user ? user.name : ''}</Name>
                         <Title>{user ? user.username : ''}</Title>

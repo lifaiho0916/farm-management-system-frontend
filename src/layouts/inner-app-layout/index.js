@@ -1,17 +1,17 @@
 /** @jsxImportSource @emotion/react */
-import {useState} from 'react'
+import { useState } from 'react'
 import PropTypes from "prop-types";
-import {Grid, Drawer, Card} from "antd";
+import { Grid, Drawer, Card } from "antd";
 import utils from 'utils'
-import {MenuOutlined} from '@ant-design/icons';
+import { MenuOutlined } from '@ant-design/icons';
 import styled from '@emotion/styled';
-import {css} from '@emotion/react';
-import {TEMPLATE, DARK_MODE, BORDER} from 'constants/ThemeConstant';
-import {useSelector} from 'react-redux';
+import { css } from '@emotion/react';
+import { TEMPLATE, DARK_MODE, BORDER } from 'constants/ThemeConstant';
+import { useSelector } from 'react-redux';
 
-const {useBreakpoint} = Grid;
+const { useBreakpoint } = Grid;
 
-const MainContent = styled.div(({hasPageHeader, gutter}) => {
+const MainContent = styled.div(({ hasPageHeader, gutter }) => {
 
     const baseStyle = {
         minHeight: `calc(100vh - ${TEMPLATE.CONTENT_HEIGHT_OFFSET}px - ${TEMPLATE.LAYOUT_CONTENT_GUTTER}px * 2  - 2px);`,
@@ -28,8 +28,7 @@ const MainContent = styled.div(({hasPageHeader, gutter}) => {
 
 
 const SideContent = props => {
-    const {sideContent, sideContentWidth = 250, border} = props
-
+    const { sideContent, sideContentWidth = 250 } = props
     const currentTheme = useSelector(state => state.theme.currentTheme)
 
     return (
@@ -43,7 +42,7 @@ const SideContent = props => {
 }
 
 const SideContentMobile = props => {
-    const {sideContent, visible, onSideContentClose} = props
+    const { sideContent, visible, onSideContentClose } = props
     return (
         <Drawer
             width={320}
@@ -51,7 +50,7 @@ const SideContentMobile = props => {
             closable={false}
             onClose={onSideContentClose}
             open={visible}
-            bodyStyle={{paddingLeft: 0, paddingRight: 0}}
+            bodyStyle={{ paddingLeft: 0, paddingRight: 0 }}
         >
             <div className="h-100">
                 {sideContent}
@@ -61,7 +60,7 @@ const SideContentMobile = props => {
 }
 
 export const InnerAppLayout = props => {
-    const {mainContent, pageHeader, sideContentGutter = true} = props
+    const { mainContent, pageHeader, sideContentGutter = true } = props
     const isMobile = !utils.getBreakPoint(useBreakpoint()).includes('lg')
     const [visible, setVisible] = useState(false);
 
@@ -92,7 +91,7 @@ export const InnerAppLayout = props => {
             <MainContent hasPageHeader={pageHeader} gutter={sideContentGutter}>
                 {isMobile ?
                     <div className={`font-size-lg mb-3 ${!sideContentGutter ? 'pt-3 px-3' : ''}`}>
-                        <MenuOutlined onClick={() => openSideContentMobile()}/>
+                        <MenuOutlined onClick={() => openSideContentMobile()} />
                     </div>
                     :
                     null
