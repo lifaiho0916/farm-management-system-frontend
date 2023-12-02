@@ -2,6 +2,16 @@ import API from 'auth/FetchInterceptor'
 
 const FarmService = {}
 
+FarmService.getFarmByUser = async () => {
+    try {
+        const res = await API.get('/user-farm')
+        return res;
+    } catch (err) {
+        console.log(err)
+    }
+    return undefined
+}
+
 FarmService.getFarmsByAdmin = async (userId) => {
     try {
         const res = await API.get(`/farms/${userId}`)

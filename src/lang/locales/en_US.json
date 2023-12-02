@@ -3,6 +3,7 @@
   "sidenav.dashboard": "Dashboard",
   "sidenav.users": "Users",
   "sidenav.farms": "Farms",
+  "sidenav.farm": "Farm",
   "sidenav.pricing": "Pricing",
   "sidenav.dashboard.default": "Default",
   "sidenav.dashboard.analytic": "Analytic",

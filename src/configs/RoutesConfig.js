@@ -46,3 +46,16 @@ export const protectedRoutes = [
         component: React.lazy(() => import('views/app-views/pricing')),
     },
 ]
+
+export const userProtectedRoutes = [
+    {
+        key: 'dashboard.default',
+        path: `${APP_PREFIX_PATH}/dashboards/default`,
+        component: React.lazy(() => import('views/app-views/dashboards/default')),
+    },
+    {
+        key: 'farm',
+        path: `${APP_PREFIX_PATH}/farm`,
+        component: React.lazy(() => import('views/app-views/farm')),
+    },
+]

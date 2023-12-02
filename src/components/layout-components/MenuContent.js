@@ -1,18 +1,19 @@
-import React, {useMemo} from 'react';
-import {Link} from 'react-router-dom';
-import {Menu, Grid} from 'antd';
+import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { Menu, Grid } from 'antd';
 import IntlMessage from '../util-components/IntlMessage';
 import Icon from '../util-components/Icon';
 import navigationConfig from 'configs/NavigationConfig';
-import {useSelector, useDispatch} from 'react-redux';
-import {SIDE_NAV_LIGHT, NAV_TYPE_SIDE} from "constants/ThemeConstant";
+import { useSelector, useDispatch } from 'react-redux';
+import { SIDE_NAV_LIGHT, NAV_TYPE_SIDE } from "constants/ThemeConstant";
 import utils from 'utils'
-import {onMobileNavToggle} from 'store/slices/themeSlice';
+import { onMobileNavToggle } from 'store/slices/themeSlice';
+import userNavigationConfig from 'configs/UserNavigationConfig';
 
-const {useBreakpoint} = Grid;
+const { useBreakpoint } = Grid;
 
 const setLocale = (localeKey, isLocaleOn = true) =>
-    isLocaleOn ? <IntlMessage id={localeKey}/> : localeKey.toString();
+    isLocaleOn ? <IntlMessage id={localeKey} /> : localeKey.toString();
 
 const setDefaultOpen = (key) => {
     let keyList = [];
@@ -28,7 +29,7 @@ const setDefaultOpen = (key) => {
     return keyList;
 };
 
-const MenuItem = ({title, icon, path}) => {
+const MenuItem = ({ title, icon, path }) => {
 
     const dispatch = useDispatch();
 
@@ -42,9 +43,9 @@ const MenuItem = ({title, icon, path}) => {
 
     return (
         <>
-            {icon && <Icon type={icon}/>}
+            {icon && <Icon type={icon} />}
             <span>{setLocale(title)}</span>
-            {path && <Link onClick={closeMobileNav} to={path}/>}
+            {path && <Link onClick={closeMobileNav} to={path} />}
         </>
     )
 }
@@ -52,31 +53,32 @@ const MenuItem = ({title, icon, path}) => {
 const getSideNavMenuItem = (navItem) => navItem.map(nav => {
     return {
         key: nav.key,
-        label: <MenuItem title={nav.title} {...(nav.isGroupTitle ? {} : {path: nav.path, icon: nav.icon})} />,
-        ...(nav.isGroupTitle ? {type: 'group'} : {}),
-        ...(nav.submenu.length > 0 ? {children: getSideNavMenuItem(nav.submenu)} : {})
+        label: <MenuItem title={nav.title} {...(nav.isGroupTitle ? {} : { path: nav.path, icon: nav.icon })} />,
+        ...(nav.isGroupTitle ? { type: 'group' } : {}),
+        ...(nav.submenu.length > 0 ? { children: getSideNavMenuItem(nav.submenu) } : {})
     }
 })
 
 const getTopNavMenuItem = (navItem) => navItem.map(nav => {
     return {
         key: nav.key,
-        label: <MenuItem title={nav.title} icon={nav.icon} {...(nav.isGroupTitle ? {} : {path: nav.path})} />,
-        ...(nav.submenu.length > 0 ? {children: getTopNavMenuItem(nav.submenu)} : {})
+        label: <MenuItem title={nav.title} icon={nav.icon} {...(nav.isGroupTitle ? {} : { path: nav.path })} />,
+        ...(nav.submenu.length > 0 ? { children: getTopNavMenuItem(nav.submenu) } : {})
     }
 })
 
 const SideNavContent = (props) => {
 
-    const {routeInfo, hideGroupTitle, sideNavTheme = SIDE_NAV_LIGHT} = props;
+    const { routeInfo, hideGroupTitle, sideNavTheme = SIDE_NAV_LIGHT } = props;
+    const { user } = useSelector(state => state.auth);
 
-    const menuItems = useMemo(() => getSideNavMenuItem(navigationConfig), []);
+    const menuItems = useMemo(() => getSideNavMenuItem(user?.level === 'ADMIN' ? navigationConfig : userNavigationConfig), [user]);
 
-    return (  
+    return (
         <Menu
             mode="inline"
             theme={sideNavTheme === SIDE_NAV_LIGHT ? "light" : "dark"}
-            style={{height: "100%", borderInlineEnd: 0}}
+            style={{ height: "100%", borderInlineEnd: 0 }}
             defaultSelectedKeys={[routeInfo?.key]}
             defaultOpenKeys={setDefaultOpen(routeInfo?.key)}
             className={hideGroupTitle ? "hide-group-title" : ""}
@@ -94,7 +96,7 @@ const TopNavContent = () => {
     return (
         <Menu
             mode="horizontal"
-            style={{backgroundColor: topNavColor}}
+            style={{ backgroundColor: topNavColor }}
             items={menuItems}
         />
     );
