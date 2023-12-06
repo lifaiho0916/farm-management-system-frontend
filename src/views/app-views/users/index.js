@@ -248,7 +248,7 @@ const UserList = () => {
             dataIndex: 'actions',
             render: (_, elm) => (
                 <div className="text-right d-flex justify-content-end">
-                    <Tooltip title="View">
+                    <Tooltip title="Edit">
                         <Button className="mr-2" icon={<EditOutlined />} onClick={() => EditBtnClick(elm.id)} size="small" />
                     </Tooltip>
                     <Tooltip title="Delete">
