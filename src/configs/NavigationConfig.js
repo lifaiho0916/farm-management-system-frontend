@@ -1,4 +1,5 @@
-import { DashboardOutlined, UserOutlined, TableOutlined, MoneyCollectOutlined } from '@ant-design/icons';
+import { DashboardOutlined, UserOutlined, TableOutlined, MoneyCollectOutlined, ApartmentOutlined, FundProjectionScreenOutlined } from '@ant-design/icons';
+import { Layout } from 'antd';
 import { APP_PREFIX_PATH } from 'configs/AppConfig'
 
 
@@ -34,6 +35,22 @@ const navigationConfig = [
         path: `${APP_PREFIX_PATH}/farms`,
         title: 'sidenav.farms',
         icon: TableOutlined,
+        breadcrumb: true,
+        submenu: []
+    },
+    {
+        key: 'plots',
+        path: `${APP_PREFIX_PATH}/plots`,
+        title: 'sidenav.plots',
+        icon: ApartmentOutlined,
+        breadcrumb: true,
+        submenu: []
+    },
+    {
+        key: 'crops',
+        path: `${APP_PREFIX_PATH}/crops`,
+        title: 'sidenav.crops',
+        icon: FundProjectionScreenOutlined,
         breadcrumb: true,
         submenu: []
     },

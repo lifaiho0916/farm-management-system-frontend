@@ -36,6 +36,16 @@ export const protectedRoutes = [
         component: React.lazy(() => import('views/app-views/farms')),
     },
     {
+        key: 'plots',
+        path: `${APP_PREFIX_PATH}/plots`,
+        component: React.lazy(() => import('views/app-views/plots')),
+    },
+    {
+        key: 'crops',
+        path: `${APP_PREFIX_PATH}/crops`,
+        component: React.lazy(() => import('views/app-views/crops')),
+    },
+    {
         key: 'setting',
         path: `${APP_PREFIX_PATH}/setting/*`,
         component: React.lazy(() => import('views/app-views/setting')),
@@ -57,5 +67,10 @@ export const userProtectedRoutes = [
         key: 'farm',
         path: `${APP_PREFIX_PATH}/farm`,
         component: React.lazy(() => import('views/app-views/farm')),
+    },
+    {
+        key: 'setting',
+        path: `${APP_PREFIX_PATH}/setting/*`,
+        component: React.lazy(() => import('views/app-views/setting')),
     },
 ]

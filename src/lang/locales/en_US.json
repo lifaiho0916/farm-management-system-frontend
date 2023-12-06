@@ -4,6 +4,8 @@
   "sidenav.users": "Users",
   "sidenav.farms": "Farms",
   "sidenav.farm": "Farm",
+  "sidenav.plots": "Plots",
+  "sidenav.crops": "Crops",
   "sidenav.pricing": "Pricing",
   "sidenav.dashboard.default": "Default",
   "sidenav.dashboard.analytic": "Analytic",
