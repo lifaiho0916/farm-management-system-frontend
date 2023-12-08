@@ -43,7 +43,7 @@ const PlotList = () => {
         const res = await PlotService.getPlotsByFarm(id)
         if (res) {
             dispatch(setPlots(res))
-            setFarm(farms.filter((farm) => farm.id === id)[0])
+            dispatch(setFarm(farms.filter((farm) => farm.id === id)[0]))
         }
     }
 

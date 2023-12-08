@@ -45,8 +45,7 @@ const ProductCropList = () => {
         const res = await ProductCropService.getProductCropsByFarm(id)
         if (res) {
             dispatch(setProductCrops(res))
-            setFarm(farms.filter((farm) => farm.id === id)[0])
-            console.log(productCrops)
+            dispatch(setFarm(farms.filter((farm) => farm.id === id)[0]))
         }
     }
 
