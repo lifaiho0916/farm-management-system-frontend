@@ -89,6 +89,7 @@ const PlotList = () => {
 
     const AddPlot = async (values) => {
         values.farmId = farm.id
+        console.log(values)
         setIsLoading(true)
         const res = await PlotService.createPlot({ ...values, farmId: farm.id });
         if (res) {

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select } from 'antd';
+import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
 import ProductCropService from 'services/ProductCropService';
 import { useSelector, useDispatch } from 'react-redux';
@@ -13,6 +13,8 @@ const layout = {
 };
 
 const { Option } = Select;
+
+const dateFormat = 'DD/MM/YYYY';
 
 const ProductCropList = () => {
 
@@ -44,6 +46,7 @@ const ProductCropList = () => {
         if (res) {
             dispatch(setProductCrops(res))
             setFarm(farms.filter((farm) => farm.id === id)[0])
+            console.log(productCrops)
         }
     }
 
@@ -71,7 +74,7 @@ const ProductCropList = () => {
                     try {
                         const res = await ProductCropService.deleteProductCrop(id);
                         if (res) {
-                            message.success({ content: 'Plot deleted successfully', duration: 2.5 });
+                            message.success({ content: 'Product Crop deleted successfully', duration: 2.5 });
                             const filtered = productCrops.filter((productCrop) => productCrop.id !== id);
                             dispatch(setProductCrops(filtered));
                             resolve();
@@ -89,6 +92,8 @@ const ProductCropList = () => {
 
     const AddProductCrop = async (values) => {
         setIsLoading(true)
+        values.farmId = farm.id
+        values.year = values.date.$y
         const res = await ProductCropService.createProductCrop(values);
         if (res) {
             message.success({ content: "Plot created successfully", duration: 2.5 });
@@ -120,7 +125,10 @@ const ProductCropList = () => {
     }, [user])
 
     useEffect(() => {
-        if (farms.length > 0) getProductCrops(farms[0].id);
+        if (farms.length > 0) {
+            getProductCrops(farms[0].id)
+            dispatch(setFarm(farms[0]))
+        }
     }, [farms])
 
 
@@ -138,6 +146,34 @@ const ProductCropList = () => {
             )
         },
         {
+            title: 'Crop',
+            dataIndex: 'crop',
+            render: crop => (
+                <span>{crop.description}</span>
+            ),
+            sorter: {
+                compare: (a, b) => {
+                    a = a.quantity.description.toLowerCase();
+                    b = b.quantity.description.toLowerCase();
+                    return a > b ? -1 : b > a ? 1 : 0;
+                },
+            },
+        },
+        {
+            title: 'Unit',
+            dataIndex: 'unit',
+            render: unit => (
+                <span>{unit.description}</span>
+            ),
+            sorter: {
+                compare: (a, b) => {
+                    a = a.unit.description.toLowerCase();
+                    b = b.unit.description.toLowerCase();
+                    return a > b ? -1 : b > a ? 1 : 0;
+                },
+            },
+        },
+        {
             title: 'Quantity',
             dataIndex: 'quantity',
             render: quantity => (
@@ -147,6 +183,20 @@ const ProductCropList = () => {
                 compare: (a, b) => {
                     a = a.quantity.toLowerCase();
                     b = b.quantity.toLowerCase();
+                    return a > b ? -1 : b > a ? 1 : 0;
+                },
+            },
+        },
+        {
+            title: 'Type',
+            dataIndex: 'unit',
+            render: unit => (
+                <span>{unit.type}</span>
+            ),
+            sorter: {
+                compare: (a, b) => {
+                    a = a.unit.type.toLowerCase();
+                    b = b.unit.type.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
@@ -205,22 +255,51 @@ const ProductCropList = () => {
                         style={{ marginTop: 20 }}
                         onFinish={mode ? AddProductCrop : EditProductCrop}
                     >
+                        <Form.Item
+                            label="Crop"
+                            name="cropDescription"
+                            initialValue={selectedProductCrop?.crop.description}
+                            rules={[{ required: true, message: 'Crop is required' }]}
+                        >
+                            <Input defaultValue={selectedProductCrop?.crop.description} placeholder="Coffe"/>
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Unit"
+                            name="unitDescription"
+                            initialValue={selectedProductCrop?.unit.description}
+                            rules={[{ required: true, message: 'Unit is required' }]}
+                        >
+                            <Input defaultValue={selectedProductCrop?.unit.description}  placeholder="60kg"/>
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Type"
+                            name="type"
+                            initialValue={selectedProductCrop?.unit.type}
+                            rules={[{ required: true, message: 'Type is required' }]}
+                        >
+                            <Input defaultValue={selectedProductCrop?.unit.type}  placeholder="Sack"/>
+                        </Form.Item>
 
                         <Form.Item
                             label="Quantity"
                             name="quantity"
                             initialValue={selectedProductCrop?.quantity}
+                            rules={[{ required: true, message: 'Quantity is required' }]}
                         >
-                            <Input defaultValue={selectedProductCrop?.quantity} />
+                            <Input defaultValue={selectedProductCrop?.quantity}  placeholder="12"/>
                         </Form.Item>
 
-                        <Form.Item
-                            label="Date"
-                            name="date"
-                            initialValue={selectedProductCrop?.date}
-                        >
-                            <Input defaultValue={selectedProductCrop?.date} />
-                        </Form.Item>
+                        {mode &&
+                            <Form.Item
+                                label="Product Date"
+                                name="date"
+                                rules={[{ required: true, message: 'Date is required' }]}
+                            >
+                                <DatePicker format={dateFormat} />
+                            </Form.Item>
+                        }
 
                         <Form.Item>
                             <Button type="primary" htmlType="submit" loading={isLoading}>
