@@ -46,6 +46,21 @@ export const protectedRoutes = [
         component: React.lazy(() => import('views/app-views/crops')),
     },
     {
+        key: 'suppliers',
+        path: `${APP_PREFIX_PATH}/suppliers`,
+        component: React.lazy(() => import('views/app-views/suppliers')),
+    },
+    {
+        key: 'procurement',
+        path: `${APP_PREFIX_PATH}/procurement`,
+        component: React.lazy(() => import('views/app-views/procurement')),
+    },
+    {
+        key: 'products',
+        path: `${APP_PREFIX_PATH}/products`,
+        component: React.lazy(() => import('views/app-views/products')),
+    },
+    {
         key: 'setting',
         path: `${APP_PREFIX_PATH}/setting/*`,
         component: React.lazy(() => import('views/app-views/setting')),
