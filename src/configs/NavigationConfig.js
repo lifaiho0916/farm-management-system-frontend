@@ -1,4 +1,4 @@
-import { DashboardOutlined, UserOutlined, TableOutlined, MoneyCollectOutlined, ApartmentOutlined, FundProjectionScreenOutlined, TeamOutlined, ShoppingCartOutlined, GiftOutlined } from '@ant-design/icons';
+import { DashboardOutlined, UserOutlined, TableOutlined, MoneyCollectOutlined, ApartmentOutlined, FundOutlined, TeamOutlined, ShoppingCartOutlined, GiftOutlined, CarryOutOutlined } from '@ant-design/icons';
 import { Layout } from 'antd';
 import { APP_PREFIX_PATH } from 'configs/AppConfig'
 
@@ -50,7 +50,15 @@ const navigationConfig = [
         key: 'crops',
         path: `${APP_PREFIX_PATH}/crops`,
         title: 'sidenav.crops',
-        icon: FundProjectionScreenOutlined,
+        icon: CarryOutOutlined,
+        breadcrumb: true,
+        submenu: []
+    },
+    {
+        key: 'productCrops',
+        path: `${APP_PREFIX_PATH}/productCrops`,
+        title: 'sidenav.productCrops',
+        icon: FundOutlined,
         breadcrumb: true,
         submenu: []
     },

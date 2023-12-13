@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select } from 'antd';
+import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
-import CropService from 'services/CropService';
+import ProductCropService from 'services/ProductCropService';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFarm, setFarms } from 'store/slices/farmSlice';
-import { setCrops } from 'store/slices/cropSlice';
+import { setProductCrops } from 'store/slices/productCropSlice';
 import FarmService from 'services/FarmService';
 
 const layout = {
@@ -14,11 +14,13 @@ const layout = {
 
 const { Option } = Select;
 
-const CropList = () => {
+const dateFormat = 'DD/MM/YYYY';
+
+const ProductCropList = () => {
 
     const { user } = useSelector(state => state.auth)
     const { farm, farms } = useSelector(state => state.farm)
-    const { crops } = useSelector(state => state.crop)
+    const { productCrops } = useSelector(state => state.productCrop)
     const dispatch = useDispatch()
 
     const handleCancel = () => {
@@ -28,7 +30,7 @@ const CropList = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [mode, setMode] = useState(true);
-    const [selectedCrop, setSelectedCrop] = useState(null)
+    const [selectedProductCrop, setSelectedProductCrop] = useState(null)
 
     const getFarms = async () => {
         dispatch(setFarms([]))
@@ -38,23 +40,23 @@ const CropList = () => {
         }
     }
 
-    const getCrops = async (id) => {
-        dispatch(setCrops([]))
-        const res = await CropService.getCropsByFarm(id)
+    const getProductCrops = async (id) => {
+        dispatch(setProductCrops([]))
+        const res = await ProductCropService.getProductCropsByFarm(id)
         if (res) {
-            dispatch(setCrops(res))
+            dispatch(setProductCrops(res))
             dispatch(setFarm(farms.filter((farm) => farm.id === id)[0]))
         }
     }
 
     const AddBtnClick = () => {
-        setSelectedCrop(null)
+        setSelectedProductCrop(null)
         setIsModalOpen(true);
         setMode(true);
     };
 
     const EditBtnClick = (id) => {
-        setSelectedCrop(crops.filter(crop => crop.id === id)[0])
+        setSelectedProductCrop(productCrops.filter(productCrop => productCrop.id === id)[0])
         setIsModalOpen(true);
         setMode(false);
     }
@@ -69,11 +71,11 @@ const CropList = () => {
             onOk() {
                 return new Promise(async (resolve, reject) => {
                     try {
-                        const res = await CropService.deleteCrop(id);
+                        const res = await ProductCropService.deleteProductCrop(id);
                         if (res) {
-                            message.success({ content: 'Crop deleted successfully', duration: 2.5 });
-                            const filtered = crops.filter((crop) => crop.id !== id);
-                            dispatch(setCrops(filtered));
+                            message.success({ content: 'Product Crop deleted successfully', duration: 2.5 });
+                            const filtered = productCrops.filter((productCrop) => productCrop.id !== id);
+                            dispatch(setProductCrops(filtered));
                             resolve();
                         } else {
                             reject();
@@ -87,29 +89,29 @@ const CropList = () => {
         });
     }
 
-    const Addcrop = async (values) => {
+    const AddProductCrop = async (values) => {
         setIsLoading(true)
         values.farmId = farm.id
-        const res = await CropService.createCrop(values);
+        values.year = values.date.$y
+        const res = await ProductCropService.createProductCrop(values);
         if (res) {
             message.success({ content: "Plot created successfully", duration: 2.5 });
-            dispatch(setCrops([...crops, res]))
+            dispatch(setProductCrops([...productCrops, res]))
             setIsModalOpen(false);
         }
         setIsLoading(false)
     }
 
-    const Editcrop = async (values) => {
-        values.farmId = farm.id
+    const EditProductCrop = async (values) => {
         setIsLoading(true)
-        const res = await CropService.updateCrop(selectedCrop.id, values);
+        const res = await ProductCropService.updateProductCrop(selectedProductCrop.id, values);
         if (res) {
-            message.success({ content: "Crop updated successfully", duration: 2.5 });
-            const updatedCrops = crops.map((crop) => {
-                if (crop.id === selectedCrop.id) return res;
-                else return crop
+            message.success({ content: "Product Crop updated successfully", duration: 2.5 });
+            const updatedProductCrops = productCrops.map((productCrop) => {
+                if (productCrop.id === selectedProductCrop.id) return res;
+                else return productCrop
             })
-            dispatch(setCrops(updatedCrops))
+            dispatch(setProductCrops(updatedProductCrops))
             setIsModalOpen(false);
         }
         setIsLoading(false)
@@ -123,7 +125,7 @@ const CropList = () => {
 
     useEffect(() => {
         if (farms.length > 0) {
-            getCrops(farms[0].id)
+            getProductCrops(farms[0].id)
             dispatch(setFarm(farms[0]))
         }
     }, [farms])
@@ -131,7 +133,7 @@ const CropList = () => {
 
     useEffect(() => {
         if(farm) {
-            getCrops(farm.id);
+            getProductCrops(farm.id);
         }
     }, [farm])
 
@@ -144,56 +146,70 @@ const CropList = () => {
         },
         {
             title: 'Crop',
-            dataIndex: 'description',
-            render: description => (
-                <span>{description}</span>
+            dataIndex: 'crop',
+            render: crop => (
+                <span>{crop.description}</span>
             ),
             sorter: {
                 compare: (a, b) => {
-                    a = a.description.toLowerCase();
-                    b = b.description.toLowerCase();
+                    a = a.quantity.description.toLowerCase();
+                    b = b.quantity.description.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
         },
         {
-            title: 'Year',
-            dataIndex: 'year',
-            render: year => (
-                <span>{year}</span>
+            title: 'Unit',
+            dataIndex: 'unit',
+            render: unit => (
+                <span>{unit.description}</span>
             ),
             sorter: {
                 compare: (a, b) => {
-                    a = a.year.toLowerCase();
-                    b = b.year.toLowerCase();
+                    a = a.unit.description.toLowerCase();
+                    b = b.unit.description.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
         },
         {
-            title: 'Start Date',
-            dataIndex: 'start_date',
-            render: start_date => (
-                <span>{start_date}</span>
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            render: quantity => (
+                <span>{quantity}</span>
             ),
             sorter: {
                 compare: (a, b) => {
-                    a = a.start_date.toLowerCase();
-                    b = b.start_date.toLowerCase();
+                    a = a.quantity.toLowerCase();
+                    b = b.quantity.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
         },
         {
-            title: 'End Date',
-            dataIndex: 'end_date',
-            render: end_date => (
-                <span>{end_date}</span>
+            title: 'Type',
+            dataIndex: 'unit',
+            render: unit => (
+                <span>{unit.type}</span>
             ),
             sorter: {
                 compare: (a, b) => {
-                    a = a.end_date.toLowerCase();
-                    b = b.end_date.toLowerCase();
+                    a = a.unit.type.toLowerCase();
+                    b = b.unit.type.toLowerCase();
+                    return a > b ? -1 : b > a ? 1 : 0;
+                },
+            },
+        },
+        {
+            title: 'Date',
+            dataIndex: 'date',
+            render: date => (
+                <span>{date}</span>
+            ),
+            sorter: {
+                compare: (a, b) => {
+                    a = a.date.toLowerCase();
+                    b = b.date.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
@@ -218,17 +234,17 @@ const CropList = () => {
         <>
             <Card bodyStyle={{ 'padding': '10px' }}>
                 {farms.length > 0 &&
-                    <Select onChange={(value) => { getCrops(value) }} defaultValue={farms[0].id}>
+                    <Select onChange={(value) => { getProductCrops(value) }} defaultValue={farms[0].id}>
                         {farms.map((farm, index) => (
                             <Option key={index} value={farm.id}>{farm.description}</Option>
                         ))}
                     </Select>
                 }
                 <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
-                    Add Crop
+                    Add Product Crop
                 </Button>
                 <div className="table-responsive">
-                    <Table columns={tableColumns} dataSource={crops} rowKey='id' />
+                    <Table columns={tableColumns} dataSource={productCrops} rowKey='id' />
                 </div>
             </Card>
             {isModalOpen &&
@@ -236,43 +252,53 @@ const CropList = () => {
                     <Form
                         {...layout}
                         style={{ marginTop: 20 }}
-                        onFinish={mode ? Addcrop : Editcrop}
+                        onFinish={mode ? AddProductCrop : EditProductCrop}
                     >
                         <Form.Item
                             label="Crop"
-                            name="description"
-                            initialValue={selectedCrop?.description}
+                            name="cropDescription"
+                            initialValue={selectedProductCrop?.crop.description}
                             rules={[{ required: true, message: 'Crop is required' }]}
                         >
-                            <Input defaultValue={selectedCrop?.description} placeholder="Coffe"/>
+                            <Input defaultValue={selectedProductCrop?.crop.description} placeholder="Coffe"/>
                         </Form.Item>
 
                         <Form.Item
-                            label="Year"
-                            name="year"
-                            initialValue={selectedCrop?.year}
-                            rules={[{ required: true, message: 'Year is required' }]}
+                            label="Unit"
+                            name="unitDescription"
+                            initialValue={selectedProductCrop?.unit.description}
+                            rules={[{ required: true, message: 'Unit is required' }]}
                         >
-                            <Input defaultValue={selectedCrop?.year}  placeholder="2023"/>
+                            <Input defaultValue={selectedProductCrop?.unit.description}  placeholder="60kg"/>
                         </Form.Item>
 
                         <Form.Item
-                            label="Start Month"
-                            name="start_date"
-                            initialValue={selectedCrop?.start_date}
-                            rules={[{ required: true, message: 'Start month is required' }]}
+                            label="Type"
+                            name="type"
+                            initialValue={selectedProductCrop?.unit.type}
+                            rules={[{ required: true, message: 'Type is required' }]}
                         >
-                            <Input defaultValue={selectedCrop?.start_date}  placeholder="03"/>
+                            <Input defaultValue={selectedProductCrop?.unit.type}  placeholder="Sack"/>
                         </Form.Item>
 
                         <Form.Item
-                            label="End Month"
-                            name="end_date"
-                            initialValue={selectedCrop?.end_date}
-                            rules={[{ required: true, message: 'End month is required' }]}
+                            label="Quantity"
+                            name="quantity"
+                            initialValue={selectedProductCrop?.quantity}
+                            rules={[{ required: true, message: 'Quantity is required' }]}
                         >
-                            <Input defaultValue={selectedCrop?.end_date}  placeholder="12"/>
+                            <Input defaultValue={selectedProductCrop?.quantity}  placeholder="12"/>
                         </Form.Item>
+
+                        {mode &&
+                            <Form.Item
+                                label="Product Date"
+                                name="date"
+                                rules={[{ required: true, message: 'Date is required' }]}
+                            >
+                                <DatePicker format={dateFormat} />
+                            </Form.Item>
+                        }
 
                         <Form.Item>
                             <Button type="primary" htmlType="submit" loading={isLoading}>
@@ -284,7 +310,6 @@ const CropList = () => {
             }
         </>
     )
-    
 }
 
-export default CropList
+export default ProductCropList
