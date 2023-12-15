@@ -12,6 +12,16 @@ CategoryService.getAllCategory = async () => {
     return undefined
 }
 
+CategoryService.getCategoryById = async (id) => {
+    try {
+        const res = await API.get(`/category/${id}`)
+        return res
+    } catch (err) {
+        console.log(err)
+    }
+    return undefined
+}
+
 CategoryService.createCategory = async (data) => {
     try {
         const res = await API.post(`/category`, data)

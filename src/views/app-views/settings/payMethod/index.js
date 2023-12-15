@@ -10,8 +10,6 @@ const layout = {
     wrapperCol: { span: 19 },
 };
 
-const { Option } = Select;
-
 const PayMethodList = () => {
     const { user } = useSelector(state => state.auth)
     const { payMethods } = useSelector(state => state.payMethod)

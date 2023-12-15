@@ -152,6 +152,14 @@ const navigationConfig = [
                 icon: '',
                 breadcrumb: true,
                 submenu: []
+              },
+              {
+                key: 'unit',
+                path: `${APP_PREFIX_PATH}/settings/unit`,
+                title: 'sidenav.unit',
+                icon: '',
+                breadcrumb: true,
+                submenu: []
               }
             ]
           },

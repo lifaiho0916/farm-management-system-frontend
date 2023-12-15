@@ -173,20 +173,6 @@ const ProductCropList = () => {
             },
         },
         {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            render: quantity => (
-                <span>{quantity}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.quantity.toLowerCase();
-                    b = b.quantity.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
             title: 'Type',
             dataIndex: 'unit',
             render: unit => (
@@ -196,6 +182,20 @@ const ProductCropList = () => {
                 compare: (a, b) => {
                     a = a.unit.type.toLowerCase();
                     b = b.unit.type.toLowerCase();
+                    return a > b ? -1 : b > a ? 1 : 0;
+                },
+            },
+        },
+        {
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            render: quantity => (
+                <span>{quantity}</span>
+            ),
+            sorter: {
+                compare: (a, b) => {
+                    a = a.quantity.toLowerCase();
+                    b = b.quantity.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
