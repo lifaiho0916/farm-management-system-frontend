@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select } from 'antd';
-import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
-import PlotService from 'services/PlotService';
+import { EditOutlined } from '@ant-design/icons';
+import UserService from 'services/UserService';
 import { useSelector, useDispatch } from 'react-redux';
-import { setFarm, setFarms } from 'store/slices/farmSlice';
-import { setCrops } from 'store/slices/cropSlice';
-import FarmService from 'services/FarmService';
+import { setUsers } from 'store/slices/userSlice';
 
 const layout = {
     labelCol: { span: 5 },
@@ -14,8 +12,8 @@ const layout = {
 
 const { Option } = Select;
 
-const CropPeriodList = () => {
+const ProductList = () => {
     
 }
 
-export default CropPeriodList
+export default ProductList

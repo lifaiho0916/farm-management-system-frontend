@@ -14,8 +14,8 @@ const layout = {
 
 const { Option } = Select;
 
-const ProcurementList = () => {
+const PurchaseList = () => {
     
 }
 
-export default ProcurementList
+export default PurchaseList

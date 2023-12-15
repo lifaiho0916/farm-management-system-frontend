@@ -224,9 +224,11 @@ const CropList = () => {
                         ))}
                     </Select>
                 }
-                <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
-                    Add Crop
-                </Button>
+                {farms.length > 0 && 
+                    <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
+                        Add Crop
+                    </Button>
+                }
                 <div className="table-responsive">
                     <Table columns={tableColumns} dataSource={crops} rowKey='id' />
                 </div>

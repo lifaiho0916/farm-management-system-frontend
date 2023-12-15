@@ -14,8 +14,8 @@ const layout = {
 
 const { Option } = Select;
 
-const ProcurementList = () => {
+const CropPeriodList = () => {
     
 }
 
-export default ProcurementList
+export default CropPeriodList

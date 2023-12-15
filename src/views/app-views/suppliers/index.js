@@ -262,9 +262,11 @@ const SupplierList = () => {
                         ))}
                     </Select>
                 }
-                <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
-                    Add Supplier
-                </Button>
+                {farms.length > 0 && 
+                    <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
+                        Add Supplier
+                    </Button>
+                }
                 <div className="table-responsive">
                     <Table columns={tableColumns} dataSource={suppliers} rowKey='id' />
                 </div>

@@ -220,9 +220,11 @@ const PlotList = () => {
                         ))}
                     </Select>
                 }
-                <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
-                    Add Plot
-                </Button>
+                {farms.length > 0 && 
+                    <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
+                        Add Plot
+                    </Button>
+                }
                 <div className="table-responsive">
                     <Table columns={tableColumns} dataSource={plots} rowKey='id' />
                 </div>

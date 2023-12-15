@@ -41,14 +41,14 @@ export const protectedRoutes = [
         component: React.lazy(() => import('views/app-views/plots')),
     },
     {
-        key: 'crops',
-        path: `${APP_PREFIX_PATH}/crops`,
-        component: React.lazy(() => import('views/app-views/crops')),
+        key: 'period',
+        path: `${APP_PREFIX_PATH}/crops/period`,
+        component: React.lazy(() => import('views/app-views/crops/period')),
     },
     {
         key: 'productCrops',
-        path: `${APP_PREFIX_PATH}/productCrops`,
-        component: React.lazy(() => import('views/app-views/productCrops')),
+        path: `${APP_PREFIX_PATH}/crops/productCrops`,
+        component: React.lazy(() => import('views/app-views/crops/productCrops')),
     },
     {
         key: 'suppliers',
@@ -61,9 +61,24 @@ export const protectedRoutes = [
         component: React.lazy(() => import('views/app-views/procurement')),
     },
     {
+        key: 'purchase',
+        path: `${APP_PREFIX_PATH}/purchase`,
+        component: React.lazy(() => import('views/app-views/purchase')),
+    },
+    {
         key: 'products',
         path: `${APP_PREFIX_PATH}/products`,
         component: React.lazy(() => import('views/app-views/products')),
+    },
+    {
+        key: 'category',
+        path: `${APP_PREFIX_PATH}/settings/category`,
+        component: React.lazy(() => import('views/app-views/settings/category')),
+    },
+    {
+        key: 'payMethod',
+        path: `${APP_PREFIX_PATH}/settings/payMethod`,
+        component: React.lazy(() => import('views/app-views/settings/payMethod')),
     },
     {
         key: 'setting',

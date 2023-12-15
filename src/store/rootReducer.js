@@ -7,6 +7,8 @@ import plot from "./slices/plotSlice"
 import supplier from "./slices/supplierSlice"
 import productCrop from "./slices/productCropSlice"
 import crop from "./slices/cropSlice"
+import category from "./slices/categorySlice"
+import payMethod from "./slices/payMethodSlice"
 import subscription from "./slices/subscriptionSlice";
 
 const rootReducer = (asyncReducers) => (state, action) => {
@@ -19,6 +21,8 @@ const rootReducer = (asyncReducers) => (state, action) => {
         supplier,
         productCrop,
         crop,
+        category,
+        payMethod,
         subscription,
         ...asyncReducers,
     })

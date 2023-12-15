@@ -240,9 +240,11 @@ const ProductCropList = () => {
                         ))}
                     </Select>
                 }
-                <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
-                    Add Product Crop
-                </Button>
+                {farms.length > 0 && 
+                    <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
+                        Add Product
+                    </Button>
+                }
                 <div className="table-responsive">
                     <Table columns={tableColumns} dataSource={productCrops} rowKey='id' />
                 </div>
