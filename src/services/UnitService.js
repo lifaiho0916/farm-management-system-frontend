@@ -44,7 +44,7 @@ UnitService.updateUnit = async (id, data) => {
 
 UnitService.deleteUnit = async (id) => {
     try {
-        const res = await API.delete(`/unit/${id}`)
+        const res = await API.delete(`/unit1/${id}`)
         return res
     } catch (err) {
         console.log(err)

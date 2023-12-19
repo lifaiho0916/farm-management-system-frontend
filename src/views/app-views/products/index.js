@@ -343,7 +343,7 @@ const ProductList = () => {
                         <Form.Item
                             label="Stock"
                             name="stock"
-                            rules={[{ required: true, message: 'Please input Stock' }]}
+                            rules={[{ required: true, message: 'Please input stock' }]}
                             initialValue={selectedProduct?.stock}
                         >
                             <Input defaultValue={selectedProduct?.stock} />

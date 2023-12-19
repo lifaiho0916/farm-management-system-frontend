@@ -34,7 +34,7 @@ UserService.createUser = async (data) => {
 
 UserService.deleteUser = async (id) => {
     try {
-        const res = await API.delete(`/user/${id}`)
+        const res = await API.delete(`/user1/${id}`)
         return res
     } catch (err) {
         console.log(err)

@@ -12,6 +12,16 @@ SupplierService.getSuppliersByFarm = async (id) => {
     return undefined
 }
 
+SupplierService.getSupplierById = async (id) => {
+    try {
+        const res = await API.get(`supplier/${id}`)
+        return res
+    } catch (err) {
+        console.log(err)
+    }
+    return undefined
+}
+
 SupplierService.createSupplier = async (data) => {
     try {
         const res = await API.post(`/supplier`, data)
@@ -34,7 +44,7 @@ SupplierService.updateSupplier = async (id, data) => {
 
 SupplierService.deleteSupplier = async (id) => {
     try {
-        const res = await API.delete(`/supplier/${id}`)
+        const res = await API.delete(`/supplier1/${id}`)
         return res
     } catch (err) {
         console.log(err)

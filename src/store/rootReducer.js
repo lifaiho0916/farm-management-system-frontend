@@ -11,6 +11,7 @@ import product from "./slices/productSlice"
 import category from "./slices/categorySlice"
 import payMethod from "./slices/payMethodSlice"
 import unit from "./slices/unitSlice"
+import purchase from "./slices/purchaseSlice"
 import subscription from "./slices/subscriptionSlice";
 
 const rootReducer = (asyncReducers) => (state, action) => {
@@ -27,6 +28,7 @@ const rootReducer = (asyncReducers) => (state, action) => {
         category,
         payMethod,
         unit,
+        purchase,
         subscription,
         ...asyncReducers,
     })

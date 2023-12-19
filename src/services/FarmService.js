@@ -34,7 +34,7 @@ FarmService.createFarm = async (data) => {
 
 FarmService.deleteFarm = async (id) => {
     try {
-        const res = await API.delete(`/farm/${id}`)
+        const res = await API.delete(`/farm1/${id}`)
         return res
     } catch (err) {
         console.log(err)
