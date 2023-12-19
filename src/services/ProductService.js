@@ -12,6 +12,16 @@ ProductService.getAllProduct = async () => {
     return undefined
 }
 
+ProductService.getProductById = async (id) => {
+    try {
+        const res = await API.get(`/product/${id}`)
+        return res
+    } catch (err) {
+        console.log(err)
+    }
+    return undefined
+}
+
 ProductService.createProduct = async (data) => {
     try {
         const res = await API.post(`/product`, data)

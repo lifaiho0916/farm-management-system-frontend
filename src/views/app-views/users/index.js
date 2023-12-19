@@ -282,7 +282,7 @@ const UserList = () => {
                             rules={[{ required: true, message: 'Please input your email!' }, { type: 'email', message: 'Please input valid email!' }]}
                             initialValue={selectedUser?.email}
                         >
-                            <Input readOnly={!mode} defaultValue={selectedUser?.email} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -313,7 +313,7 @@ const UserList = () => {
                             })]}
                             initialValue={selectedUser?.name}
                         >
-                            <Input defaultValue={selectedUser?.name} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -321,7 +321,7 @@ const UserList = () => {
                             name="phone"
                             initialValue={selectedUser?.phone}
                         >
-                            <Input defaultValue={selectedUser?.phone} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -329,7 +329,7 @@ const UserList = () => {
                             name="doc"
                             initialValue={selectedUser?.doc}
                         >
-                            <Input defaultValue={selectedUser?.doc} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -337,7 +337,7 @@ const UserList = () => {
                             name="address"
                             initialValue={selectedUser?.address}
                         >
-                            <Input defaultValue={selectedUser?.address} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -353,7 +353,7 @@ const UserList = () => {
                             name="zipcode"
                             initialValue={selectedUser?.zipcode}
                         >
-                            <Input defaultValue={selectedUser?.zipcode} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item>

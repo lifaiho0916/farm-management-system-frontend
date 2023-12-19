@@ -306,7 +306,7 @@ const PurchaseList = () => {
             },
         },
         {
-            title: 'Total Price;',
+            title: 'Total Price',
             dataIndex: 'purchase',
             render: purchase => (
                 <span>{purchase.totalPrice}</span>
@@ -397,7 +397,7 @@ const PurchaseList = () => {
                 </div>
             </Card>
             {isModalOpen &&
-                <Modal title={mode ? 'Add Purchase' : 'Edit Plot'} open={isModalOpen} footer={null} onCancel={handleCancel}>
+                <Modal title={mode ? 'Add Purchase' : 'Edit Purchase'} open={isModalOpen} footer={null} onCancel={handleCancel}>
                     <Form
                         {...layout}
                         style={{ marginTop: 20 }}
@@ -409,7 +409,7 @@ const PurchaseList = () => {
                         >
                             <Select defaultValue={mode ? products[0].id : selectedPurchase?.product.id} onChange={(value) => selectProduct(value)}>
                                 {products.map((product, index) => (
-                                    <Option key={index + 1} value={product.id}>{product.description}</Option>
+                                    <Option key={index + 1} value={product.id}>{product.category.description}, {product.description}</Option>
                                 ))}
                             </Select>
                         </Form.Item>
@@ -439,7 +439,6 @@ const PurchaseList = () => {
                             label="Date"
                             name="purchase"
                             rules={[{ required: true, message: 'Please input date' }]}
-                            initialValue={selectedPurchase?.purchase.date}
                         >
                             <DatePicker format={dateFormat} />
                         </Form.Item>
@@ -451,7 +450,7 @@ const PurchaseList = () => {
                             rules={[{ required: true, message: 'Please input total price' }]}
                             initialValue={selectedPurchase?.purchase.totalPrice}
                         >
-                            <Input defaultValue={selectedPurchase?.purchase.totalPrice} />
+                            <Input/>
                         </Form.Item>
 
                         <Form.Item
@@ -460,7 +459,7 @@ const PurchaseList = () => {
                             rules={[{ required: true, message: 'Please input total installment' }]}
                             initialValue={selectedPurchase?.purchase.totalInstallment}
                         >
-                            <Input defaultValue={selectedPurchase?.purchase.totalInstallment} />
+                            <Input/>
                         </Form.Item>
 
                         <Form.Item
@@ -469,7 +468,7 @@ const PurchaseList = () => {
                             rules={[{ required: true, message: 'Please input quantity' }]}
                             initialValue={selectedPurchase?.quantity}
                         >
-                            <Input defaultValue={selectedPurchase?.quantity} />
+                            <Input/>
                         </Form.Item>
 
                         <Form.Item
@@ -478,7 +477,7 @@ const PurchaseList = () => {
                             rules={[{ required: true, message: 'Please input price' }]}
                             initialValue={selectedPurchase?.price}
                         >
-                            <Input defaultValue={selectedPurchase?.price} />
+                            <Input/>
                         </Form.Item>
 
                         <Form.Item
@@ -487,7 +486,7 @@ const PurchaseList = () => {
                             rules={[{ required: true, message: 'Crop is required' }]}
                             initialValue={selectedPurchase?.lote}
                         >
-                            <Input defaultValue={selectedPurchase?.lote} />
+                            <Input/>
                         </Form.Item>
 
                         <Form.Item>
