@@ -3,12 +3,14 @@ import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, Date
 import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
 import PurchaseService from 'services/PurchaseService';
 import ProductService from 'services/ProductService';
+import UnitService from 'services/UnitService';
 import SupplierService from 'services/SupplierService';
 import FarmService from 'services/FarmService';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFarm, setFarms } from 'store/slices/farmSlice';
 import { setProduct, setProducts } from 'store/slices/productSlice';
 import { setSupplier, setSuppliers } from 'store/slices/supplierSlice';
+import { setUnit, setUnits } from 'store/slices/unitSlice';
 import { setPurchases } from 'store/slices/purchaseSlice';
 
 const layout = {
@@ -26,6 +28,7 @@ const PurchaseList = () => {
     const { farm, farms } = useSelector(state => state.farm)
     const { product, products } = useSelector(state => state.product)
     const { supplier, suppliers } = useSelector(state => state.supplier)
+    const { unit, units } = useSelector(state => state.unit)
     const { purchases } = useSelector(state => state.purchase)
     const dispatch = useDispatch()
 
@@ -54,6 +57,14 @@ const PurchaseList = () => {
         }
     }
 
+    const getUnits = async () => {
+        dispatch(setUnits([]))
+        const res = await UnitService.getAllUnit()
+        if (res) {
+            dispatch(setUnits(res))
+        }
+    }
+
     const getPurchases = async (id) => {
         dispatch(setPurchases([]))
         const res = await PurchaseService.getPurchaseByFarm(id)
@@ -75,6 +86,13 @@ const PurchaseList = () => {
         const res = await ProductService.getProductById(id)
         if (res) {
             dispatch(setProduct(res))
+        }
+    }
+    
+    const selectUnit = async (id) => {
+        const res = await UnitService.getUnitById(id)
+        if (res) {
+            dispatch(setUnit(res))
         }
     }
     
@@ -129,6 +147,7 @@ const PurchaseList = () => {
         values.farmId = farm.id
         values.productId = product.id
         values.supplierId = supplier.id
+        values.unitId = unit.id
         values.purchaseId = 0
         console.log(values)
         setIsLoading(true)
@@ -145,7 +164,8 @@ const PurchaseList = () => {
         values.farmId = farm.id
         values.productId = product.id
         values.supplierId = supplier.id
-        values.purchaseId = purchases.id
+        values.unitId = unit.id
+        values.purchaseId = selectedPurchase.purchase.id
         setIsLoading(true)
         const res = await PurchaseService.updatePurchase(selectedPurchase.id, values);
         if (res) {
@@ -164,6 +184,7 @@ const PurchaseList = () => {
         if (user) {
             getFarms()
             getProducts()
+            getUnits()
         }
     }, [user])
 
@@ -183,6 +204,10 @@ const PurchaseList = () => {
     useEffect(() => {
         if (products.length > 0) dispatch(setProduct(products[0]));
     }, [products])
+    
+    useEffect(() => {
+        if (units.length > 0) dispatch(setUnit(units[0]));
+    }, [units])
     
     useEffect(() => {
         if (suppliers.length > 0) dispatch(setSupplier(suppliers[0]));
@@ -295,7 +320,7 @@ const PurchaseList = () => {
             },
         },
         {
-            title: 'Installment;',
+            title: 'Installment',
             dataIndex: 'purchase',
             render: purchase => (
                 <span>{purchase.totalInstallment}</span>
@@ -399,6 +424,16 @@ const PurchaseList = () => {
                             </Select>
                         </Form.Item>
 
+                        <Form.Item
+                            label="Unit"
+                        >
+                            <Select defaultValue={mode ? units[0].id : selectedPurchase?.unit.id} onChange={(value) => selectUnit(value)}>
+                                {units.map((unit, index) => (
+                                    <Option key={index + 1} value={unit.id}>{unit.description} {unit.type}</Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+
                         {mode &&
                         <Form.Item
                             label="Date"
@@ -412,7 +447,7 @@ const PurchaseList = () => {
 
                         <Form.Item
                             label="Total Price"
-                            name="purchase"
+                            name="totalPrice"
                             rules={[{ required: true, message: 'Please input total price' }]}
                             initialValue={selectedPurchase?.purchase.totalPrice}
                         >
@@ -420,21 +455,12 @@ const PurchaseList = () => {
                         </Form.Item>
 
                         <Form.Item
-                            label="Total Installment"
-                            name="purchase"
+                            label="Installment"
+                            name="totalInstallment"
                             rules={[{ required: true, message: 'Please input total installment' }]}
                             initialValue={selectedPurchase?.purchase.totalInstallment}
                         >
                             <Input defaultValue={selectedPurchase?.purchase.totalInstallment} />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Price"
-                            name="price"
-                            rules={[{ required: true, message: 'Please input price' }]}
-                            initialValue={selectedPurchase?.price}
-                        >
-                            <Input defaultValue={selectedPurchase?.price} />
                         </Form.Item>
 
                         <Form.Item

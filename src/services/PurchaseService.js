@@ -14,7 +14,7 @@ PurchaseService.getPurchaseByFarm = async (id) => {
 
 PurchaseService.createPurchase = async (data) => {
     try {
-        const res = await API.post(`/purchase1`, data)
+        const res = await API.post(`/purchase`, data)
         return res
     } catch (err) {
         console.log(err)
@@ -34,7 +34,7 @@ PurchaseService.updatePurchase = async (id, data) => {
 
 PurchaseService.deletePurchase = async (id) => {
     try {
-        const res = await API.delete(`/purchase/${id}`)
+        const res = await API.delete(`/purchase1/${id}`)
         return res
     } catch (err) {
         console.log(err)
