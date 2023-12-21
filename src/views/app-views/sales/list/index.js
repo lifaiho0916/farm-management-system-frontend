@@ -114,7 +114,6 @@ const SaleList = () => {
     const AddProductSale = async (values) => {
         setIsLoading(true)
         values.farmId = farm.id
-        values.year = values.date.$y
         const res = await ProductSaleService.createProductSale(values);
         if (res) {
             message.success({ content: "Sale created successfully", duration: 2.5 });
