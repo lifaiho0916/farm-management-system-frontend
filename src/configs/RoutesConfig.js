@@ -56,19 +56,39 @@ export const protectedRoutes = [
         component: React.lazy(() => import('views/app-views/suppliers')),
     },
     {
-        key: 'procurement',
-        path: `${APP_PREFIX_PATH}/procurement`,
-        component: React.lazy(() => import('views/app-views/procurement')),
+        key: 'salesList',
+        path: `${APP_PREFIX_PATH}/sales/list`,
+        component: React.lazy(() => import('views/app-views/sales/list')),
     },
     {
-        key: 'purchase',
-        path: `${APP_PREFIX_PATH}/purchase`,
-        component: React.lazy(() => import('views/app-views/purchase')),
+        key: 'toReceive',
+        path: `${APP_PREFIX_PATH}/sales/toReceive`,
+        component: React.lazy(() => import('views/app-views/sales/toReceive')),
+    },
+    {
+        key: 'purchaseList',
+        path: `${APP_PREFIX_PATH}/purchase/list`,
+        component: React.lazy(() => import('views/app-views/purchase/list')),
+    },
+    {
+        key: 'detail',
+        path: `${APP_PREFIX_PATH}/purchase/detail`,
+        component: React.lazy(() => import('views/app-views/purchase/detail')),
+    },
+    {
+        key: 'toPay',
+        path: `${APP_PREFIX_PATH}/purchase/toPay`,
+        component: React.lazy(() => import('views/app-views/purchase/toPay')),
     },
     {
         key: 'products',
         path: `${APP_PREFIX_PATH}/products`,
         component: React.lazy(() => import('views/app-views/products')),
+    },
+    {
+        key: 'stock',
+        path: `${APP_PREFIX_PATH}/stock`,
+        component: React.lazy(() => import('views/app-views/stock')),
     },
     {
         key: 'category',

@@ -22,6 +22,16 @@ ProductCropService.createProductCrop = async (data) => {
     return undefined
 }
 
+ProductCropService.getProductCropById = async (id) => {
+    try {
+        const res = await API.put(`/productCrop/${id}`)
+        return res
+    } catch (err) {
+        console.log(err)
+    }
+    return undefined
+}
+
 ProductCropService.updateProductCrop = async (id, data) => {
     try {
         const res = await API.put(`/productCrop/${id}`, data)

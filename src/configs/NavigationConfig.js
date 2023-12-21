@@ -1,6 +1,6 @@
 import { DashboardOutlined, UserOutlined, TableOutlined, MoneyCollectOutlined, 
     ApartmentOutlined, FundOutlined, TeamOutlined, ShoppingCartOutlined, GiftOutlined, 
-    CarryOutOutlined, FileTextOutlined, SettingOutlined } from '@ant-design/icons';
+    CarryOutOutlined, SettingOutlined, GoldOutlined } from '@ant-design/icons';
 import { APP_PREFIX_PATH } from 'configs/AppConfig'
 
 
@@ -59,7 +59,7 @@ const navigationConfig = [
                 path: `${APP_PREFIX_PATH}/crops/period`,
                 title: 'sidenav.period',
                 icon: '',
-                breadcrumb: true,
+                breadcrumb: false,
                 submenu: []
             },
             {
@@ -67,7 +67,7 @@ const navigationConfig = [
                 path: `${APP_PREFIX_PATH}/crops/productCrops`,
                 title: 'sidenav.productCrops',
                 icon: '',
-                breadcrumb: true,
+                breadcrumb: false,
                 submenu: []
             },
         ]
@@ -101,24 +101,58 @@ const navigationConfig = [
                 path: `${APP_PREFIX_PATH}/sales`,
                 title: 'sidenav.sales',
                 icon: FundOutlined,
-                breadcrumb: false,
-                submenu: []
+                breadcrumb: true,
+                submenu: [
+                    {
+                      key: 'salesList',
+                      path: `${APP_PREFIX_PATH}/sales/list`,
+                      title: 'sidenav.list',
+                      icon: '',
+                      breadcrumb: false,
+                      submenu: []
+                    },
+                    {
+                      key: 'toReceive',
+                      path: `${APP_PREFIX_PATH}/sales/toReceive`,
+                      title: 'sidenav.toReceive',
+                      icon: '',
+                      breadcrumb: false,
+                      submenu: []
+                    }
+                ]
             },
             {
                 key: 'purchase',
                 path: `${APP_PREFIX_PATH}/purchase`,
                 title: 'sidenav.purchase',
                 icon: ShoppingCartOutlined,
-                breadcrumb: false,
-                submenu: []
-            },
-            {
-                key: 'procurement',
-                path: `${APP_PREFIX_PATH}/procurement`,
-                title: 'sidenav.procurement',
-                icon: FileTextOutlined,
-                breadcrumb: false,
-                submenu: []
+                breadcrumb: true,
+                submenu: [
+                    {
+                      key: 'purchaseList',
+                      path: `${APP_PREFIX_PATH}/purchase/list`,
+                      title: 'sidenav.list',
+                      icon: '',
+                      breadcrumb: false,
+                      submenu: []
+                    },
+                    {
+                      key: 'detail',
+                      path: `${APP_PREFIX_PATH}/purchase/detail`,
+                      title: 'sidenav.detail',
+                      icon: '',
+                      breadcrumb: false,
+                      submenu: []
+                    },
+                    {
+                      key: 'toPay',
+                      path: `${APP_PREFIX_PATH}/purchase/toPay`,
+                      title: 'sidenav.toPay',
+                      icon: '',
+                      breadcrumb: false,
+                      submenu: []
+                    }
+                ]
             },
         ]
     },
@@ -131,6 +165,14 @@ const navigationConfig = [
         isGroupTitle: true,
         submenu: [
           {
+              key: 'stock',
+              path: `${APP_PREFIX_PATH}/stock`,
+              title: 'sidenav.stock',
+              icon: GoldOutlined,
+              breadcrumb: false,
+              submenu: []
+          },
+          {
             key: 'settings',
             path: `${APP_PREFIX_PATH}/settings`,
             title: 'sidenav.settings',
@@ -142,7 +184,7 @@ const navigationConfig = [
                 path: `${APP_PREFIX_PATH}/settings/category`,
                 title: 'sidenav.category',
                 icon: '',
-                breadcrumb: true,
+                breadcrumb: false,
                 submenu: []
               },
               {
@@ -150,7 +192,7 @@ const navigationConfig = [
                 path: `${APP_PREFIX_PATH}/settings/payMethod`,
                 title: 'sidenav.payMethod',
                 icon: '',
-                breadcrumb: true,
+                breadcrumb: false,
                 submenu: []
               },
               {
@@ -158,7 +200,7 @@ const navigationConfig = [
                 path: `${APP_PREFIX_PATH}/settings/unit`,
                 title: 'sidenav.unit',
                 icon: '',
-                breadcrumb: true,
+                breadcrumb: false,
                 submenu: []
               }
             ]
