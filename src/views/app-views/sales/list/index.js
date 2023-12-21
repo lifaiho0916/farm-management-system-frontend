@@ -113,7 +113,8 @@ const SaleList = () => {
 
     const AddProductSale = async (values) => {
         setIsLoading(true)
-        values.farmId = farm.id
+        values.supplierId = supplier.id;
+        values.productCropId = productCrop.id;
         const res = await ProductSaleService.createProductSale(values);
         if (res) {
             message.success({ content: "Sale created successfully", duration: 2.5 });
@@ -125,6 +126,8 @@ const SaleList = () => {
 
     const EditProductSale = async (values) => {
         setIsLoading(true)
+        values.supplierId = supplier.id;
+        values.productCropId = productCrop.id;
         const res = await ProductSaleService.updateProductSale(selectedProductSale.id, values);
         if (res) {
             message.success({ content: "Sale updated successfully", duration: 2.5 });
@@ -175,6 +178,18 @@ const SaleList = () => {
             getSuppliers(farm.id)
         }
     }, [farm])
+
+    useEffect(() => {
+        if(productCrops.length > 0) {
+            dispatch(setProductCrop(productCrops[0]))
+        }
+    }, [productCrops])
+
+    useEffect(() => {
+        if(suppliers.length > 0) {
+            dispatch(setSuppliers(suppliers[0]))
+        }
+    }, [suppliers])
 
     const tableColumns = [
         {
