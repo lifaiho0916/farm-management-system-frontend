@@ -2,7 +2,7 @@ import API from 'auth/FetchInterceptor'
 
 const PurchaseDetailService = {}
 
-PurchaseDetailService.getPurchaseDetailByFarm = async (id) => {
+PurchaseDetailService.getPurchaseDetailByPurchase = async (id) => {
     try {
         const res = await API.get(`purchaseDetails/${id}`)
         return res
