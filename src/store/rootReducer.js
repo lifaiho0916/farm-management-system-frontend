@@ -13,6 +13,7 @@ import category from "./slices/categorySlice"
 import payMethod from "./slices/payMethodSlice"
 import unit from "./slices/unitSlice"
 import purchase from "./slices/purchaseSlice"
+import purchaseDetail from "./slices/purchaseDetailSlice"
 import toReceive from "./slices/toReceiveSlice";
 import toPay from "./slices/toPaySlice";
 import subscription from "./slices/subscriptionSlice";
@@ -35,6 +36,7 @@ const rootReducer = (asyncReducers) => (state, action) => {
         payMethod,
         unit,
         purchase,
+        purchaseDetail,
         subscription,
         ...asyncReducers,
     })

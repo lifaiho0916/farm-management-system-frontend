@@ -68,6 +68,7 @@ const SaleList = () => {
         const res = await ProductCropService.getProductCropsByFarm(id)
         if (res) {
             dispatch(setProductCrops(res))
+            console.log(res)
         }
     }
 
@@ -180,14 +181,14 @@ const SaleList = () => {
     }, [farm])
 
     useEffect(() => {
-        if(productCrops.length > 0) {
+        if (productCrops.length > 0) {
             dispatch(setProductCrop(productCrops[0]))
         }
     }, [productCrops])
 
     useEffect(() => {
-        if(suppliers.length > 0) {
-            dispatch(setSuppliers(suppliers[0]))
+        if (suppliers.length > 0) {
+            dispatch(setSupplier(suppliers[0]))
         }
     }, [suppliers])
 
@@ -200,14 +201,14 @@ const SaleList = () => {
         },
         {
             title: 'Crop',
-            dataIndex: 'crop',
-            render: crop => (
-                <span>{crop}</span>
+            dataIndex: 'productCrop',
+            render: productCrop => (
+                <span>{productCrop.crop.description}</span>
             ),
             sorter: {
                 compare: (a, b) => {
-                    a = a.crop.toLowerCase();
-                    b = b.crop.toLowerCase();
+                    a = a.productCrop.crop.description.toLowerCase();
+                    b = b.productCrop.crop.description.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
@@ -216,7 +217,7 @@ const SaleList = () => {
             title: 'Supplier',
             dataIndex: 'supplier',
             render: supplier => (
-                <span>{supplier}</span>
+                <span>{supplier.name}</span>
             ),
             sorter: {
                 compare: (a, b) => {
@@ -270,21 +271,21 @@ const SaleList = () => {
         },
         {
             title: 'Amount',
-            dataIndex: 'amount',
-            render: amount => (
-                <span>{amount}</span>
+            dataIndex: 'amount_money',
+            render: amount_money => (
+                <span>{amount_money}</span>
             ),
             sorter: {
                 compare: (a, b) => {
-                    a = a.amount.toLowerCase();
-                    b = b.amount.toLowerCase();
+                    a = a.amount_money.toLowerCase();
+                    b = b.amount_money.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
         },
         {
             title: 'installment',
-            dataIndex: 'installment',
+            dataIndex: 'total_installment',
             render: total_installment => (
                 <span>{total_installment}</span>
             ),

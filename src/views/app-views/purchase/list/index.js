@@ -2,16 +2,12 @@ import React, { useEffect, useState } from 'react'
 import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
 import PurchaseService from 'services/PurchaseService';
-import ProductService from 'services/ProductService';
-import UnitService from 'services/UnitService';
 import SupplierService from 'services/SupplierService';
-import FarmService from 'services/FarmService';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFarm, setFarms } from 'store/slices/farmSlice';
-import { setProduct, setProducts } from 'store/slices/productSlice';
 import { setSupplier, setSuppliers } from 'store/slices/supplierSlice';
-import { setUnit, setUnits } from 'store/slices/unitSlice';
 import { setPurchases } from 'store/slices/purchaseSlice';
+import FarmService from 'services/FarmService';
 
 const layout = {
     labelCol: { span: 5 },
@@ -26,9 +22,7 @@ const PurchaseList = () => {
 
     const { user } = useSelector(state => state.auth)
     const { farm, farms } = useSelector(state => state.farm)
-    const { product, products } = useSelector(state => state.product)
     const { supplier, suppliers } = useSelector(state => state.supplier)
-    const { unit, units } = useSelector(state => state.unit)
     const { purchases } = useSelector(state => state.purchase)
     const dispatch = useDispatch()
 
@@ -49,22 +43,6 @@ const PurchaseList = () => {
         }
     }
 
-    const getProducts = async () => {
-        dispatch(setProducts([]))
-        const res = await ProductService.getAllProduct()
-        if (res) {
-            dispatch(setProducts(res))
-        }
-    }
-
-    const getUnits = async () => {
-        dispatch(setUnits([]))
-        const res = await UnitService.getAllUnit()
-        if (res) {
-            dispatch(setUnits(res))
-        }
-    }
-
     const getPurchases = async (id) => {
         dispatch(setPurchases([]))
         const res = await PurchaseService.getPurchaseByFarm(id)
@@ -74,28 +52,14 @@ const PurchaseList = () => {
         }
     }
 
-    const getSuppliers= async (id) => {
+    const getSuppliers = async (id) => {
         dispatch(setSuppliers([]))
         const res = await SupplierService.getSuppliersByFarm(id)
         if (res) {
             dispatch(setSuppliers(res))
         }
     }
-    
-    const selectProduct = async (id) => {
-        const res = await ProductService.getProductById(id)
-        if (res) {
-            dispatch(setProduct(res))
-        }
-    }
-    
-    const selectUnit = async (id) => {
-        const res = await UnitService.getUnitById(id)
-        if (res) {
-            dispatch(setUnit(res))
-        }
-    }
-    
+
     const selectSupplier = async (id) => {
         const res = await SupplierService.getSupplierById(id)
         if (res) {
@@ -110,7 +74,7 @@ const PurchaseList = () => {
     };
 
     const EditBtnClick = (id) => {
-        setSelectedPurchase(purchases.filter(purchase => purchase.id === id)[0])
+        setSelectedPurchase(purchases.filter(Purchase => Purchase.id === id)[0])
         setIsModalOpen(true);
         setMode(false);
     }
@@ -128,7 +92,7 @@ const PurchaseList = () => {
                         const res = await PurchaseService.deletePurchase(id);
                         if (res) {
                             message.success({ content: 'Purchase deleted successfully', duration: 2.5 });
-                            const filtered = purchases.filter((purchase) => purchase.id !== id);
+                            const filtered = purchases.filter((Purchase) => Purchase.id !== id);
                             dispatch(setPurchases(filtered));
                             resolve();
                         } else {
@@ -145,10 +109,7 @@ const PurchaseList = () => {
 
     const AddPurchase = async (values) => {
         values.farmId = farm.id
-        values.productId = product.id
         values.supplierId = supplier.id
-        values.unitId = unit.id
-        values.purchaseId = 0
         console.log(values)
         setIsLoading(true)
         const res = await PurchaseService.createPurchase({ ...values, farmId: farm.id });
@@ -162,17 +123,14 @@ const PurchaseList = () => {
 
     const EditPurchase = async (values) => {
         values.farmId = farm.id
-        values.productId = product.id
         values.supplierId = supplier.id
-        values.unitId = unit.id
-        values.purchaseId = selectedPurchase.purchase.id
         setIsLoading(true)
         const res = await PurchaseService.updatePurchase(selectedPurchase.id, values);
         if (res) {
             message.success({ content: "Purchase updated successfully", duration: 2.5 });
-            const updatedPurchases = purchases.map((purchase) => {
-                if (purchase.id === selectedPurchase.id) return res;
-                else return purchase
+            const updatedPurchases = purchases.map((Purchase) => {
+                if (Purchase.id === selectedPurchase.id) return res;
+                else return Purchase
             })
             dispatch(setPurchases(updatedPurchases))
             setIsModalOpen(false);
@@ -183,36 +141,23 @@ const PurchaseList = () => {
     useEffect(() => {
         if (user) {
             getFarms()
-            getProducts()
-            getUnits()
         }
     }, [user])
 
     useEffect(() => {
-        if (farms.length > 0) {
-            dispatch(setFarm(farms[0]))
-        }
+        if (farms.length > 0) dispatch(setFarm(farms[0]));
     }, [farms])
 
     useEffect(() => {
-        if(farm) { 
+        if(farm) {
             getPurchases(farm.id)
             getSuppliers(farm.id)
         }
     }, [farm])
-    
-    useEffect(() => {
-        if (products.length > 0) dispatch(setProduct(products[0]));
-    }, [products])
-    
-    useEffect(() => {
-        if (units.length > 0) dispatch(setUnit(units[0]));
-    }, [units])
-    
+
     useEffect(() => {
         if (suppliers.length > 0) dispatch(setSupplier(suppliers[0]));
     }, [suppliers])
-
 
     const tableColumns = [
         {
@@ -222,141 +167,57 @@ const PurchaseList = () => {
             )
         },
         {
-            title: 'Category',
-            dataIndex: 'product',
-            render: product => (
-                <span>{product.category.description}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.product.category.description.toLowerCase();
-                    b = b.product.category.description.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
-            title: 'Product',
-            dataIndex: 'product',
-            render: product => (
-                <span>{product.description}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.product.description.toLowerCase();
-                    b = b.product.description.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
-            title: 'Unit',
-            dataIndex: 'unit',
-            render: unit => (
-                <span>{unit.description}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.unit.description.toLowerCase();
-                    b = b.unit.description.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
-            title: 'Type',
-            dataIndex: 'unit',
-            render: unit => (
-                <span>{unit.type}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.unit.type.toLowerCase();
-                    b = b.unit.type.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            render: quantity => (
-                <span>{quantity}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.quantity.toLowerCase();
-                    b = b.quantity.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
             title: 'Supplier',
-            dataIndex: 'purchase',
-            render: purchase => (
-                <span>{purchase.supplier.name}</span>
+            dataIndex: 'supplier',
+            render: supplier => (
+                <span>{supplier.name}</span>
             ),
             sorter: {
                 compare: (a, b) => {
-                    a = a.purchase.supplier.name.toLowerCase();
-                    b = b.purchase.supplier.name.toLowerCase();
+                    a = a.supplier.name.toLowerCase();
+                    b = b.supplier.name.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
         },
         {
             title: 'Total Price',
-            dataIndex: 'purchase',
-            render: purchase => (
-                <span>{purchase.totalPrice}</span>
+            dataIndex: 'totalPrice',
+            render: totalPrice => (
+                <span>{totalPrice}</span>
             ),
             sorter: {
                 compare: (a, b) => {
-                    a = a.purchase.totalPrice.toLowerCase();
-                    b = b.purchase.totalPrice.toLowerCase();
+                    a = a.totalPrice.toLowerCase();
+                    b = b.totalPrice.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
         },
         {
-            title: 'Installment',
-            dataIndex: 'purchase',
-            render: purchase => (
-                <span>{purchase.totalInstallment}</span>
+            title: 'Total Installment',
+            dataIndex: 'totalInstallment',
+            render: totalInstallment => (
+                <span>{totalInstallment}</span>
             ),
             sorter: {
                 compare: (a, b) => {
-                    a = a.purchase.totalInstallment.toLowerCase();
-                    b = b.purchase.totalInstallment.toLowerCase();
+                    a = a.totalInstallment.toLowerCase();
+                    b = b.totalInstallment.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
         },
         {
-            title: 'Lote',
-            dataIndex: 'lote',
-            render: lote => (
-                <span>{lote}</span>
+            title: 'Date',
+            dataIndex: 'date',
+            render: date => (
+                <span>{date}</span>
             ),
             sorter: {
                 compare: (a, b) => {
-                    a = a.lote.toLowerCase();
-                    b = b.lote.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
-            title: 'Price',
-            dataIndex: 'price',
-            render: price => (
-                <span>{price}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.price.toLowerCase();
-                    b = b.price.toLowerCase();
+                    a = a.date.toLowerCase();
+                    b = b.date.toLowerCase();
                     return a > b ? -1 : b > a ? 1 : 0;
                 },
             },
@@ -405,89 +266,41 @@ const PurchaseList = () => {
                     >
 
                         <Form.Item
-                            label="Product"
-                        >
-                            <Select defaultValue={mode ? products[0].id : selectedPurchase?.product.id} onChange={(value) => selectProduct(value)}>
-                                {products.map((product, index) => (
-                                    <Option key={index + 1} value={product.id}>{product.category.description}, {product.description}</Option>
-                                ))}
-                            </Select>
-                        </Form.Item>
-
-                        <Form.Item
                             label="Supplier"
                         >
-                            <Select defaultValue={mode ? suppliers[0].id : selectedPurchase?.purchase.supplier.id} onChange={(value) => selectSupplier(value)}>
+                            <Select defaultValue={mode ? suppliers[0].id : selectedPurchase?.supplier.id} onChange={(value) => selectSupplier(value)}>
                                 {suppliers.map((supplier, index) => (
-                                    <Option key={index + 1} value={supplier.id}>{supplier.name}</Option>
+                                    <Option key={index + 1} value={supplier.id}>{supplier.name}, {supplier.email}</Option>
                                 ))}
                             </Select>
                         </Form.Item>
-
-                        <Form.Item
-                            label="Unit"
-                        >
-                            <Select defaultValue={mode ? units[0].id : selectedPurchase?.unit.id} onChange={(value) => selectUnit(value)}>
-                                {units.map((unit, index) => (
-                                    <Option key={index + 1} value={unit.id}>{unit.description} {unit.type}</Option>
-                                ))}
-                            </Select>
-                        </Form.Item>
-
-                        {mode &&
-                        <Form.Item
-                            label="Date"
-                            name="purchase"
-                            rules={[{ required: true, message: 'Please input date' }]}
-                        >
-                            <DatePicker format={dateFormat} />
-                        </Form.Item>
-                        }
 
                         <Form.Item
                             label="Total Price"
                             name="totalPrice"
                             rules={[{ required: true, message: 'Please input total price' }]}
-                            initialValue={selectedPurchase?.purchase.totalPrice}
+                            initialValue={selectedPurchase?.totalPrice}
                         >
-                            <Input/>
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
-                            label="Installment"
+                            label="Total Installment"
                             name="totalInstallment"
-                            rules={[{ required: true, message: 'Please input total installment' }]}
-                            initialValue={selectedPurchase?.purchase.totalInstallment}
+                            initialValue={selectedPurchase?.totalInstallment}
                         >
-                            <Input/>
+                            <Input />
                         </Form.Item>
 
-                        <Form.Item
-                            label="Quantity"
-                            name="quantity"
-                            rules={[{ required: true, message: 'Please input quantity' }]}
-                            initialValue={selectedPurchase?.quantity}
-                        >
-                            <Input/>
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Price"
-                            name="price"
-                            rules={[{ required: true, message: 'Please input price' }]}
-                            initialValue={selectedPurchase?.price}
-                        >
-                            <Input/>
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Lote"
-                            name="lote"
-                            rules={[{ required: true, message: 'Crop is required' }]}
-                            initialValue={selectedPurchase?.lote}
-                        >
-                            <Input/>
-                        </Form.Item>
+                        {mode &&
+                            <Form.Item
+                                label="Purchase Date"
+                                name="date"
+                                rules={[{ required: true, message: 'Purchase date is required' }]}
+                            >
+                                <DatePicker format={dateFormat} />
+                            </Form.Item>
+                        }
 
                         <Form.Item>
                             <Button type="primary" htmlType="submit" loading={isLoading}>
@@ -499,7 +312,6 @@ const PurchaseList = () => {
             }
         </>
     )
-    
 }
 
 export default PurchaseList
