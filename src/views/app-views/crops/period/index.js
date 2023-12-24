@@ -87,7 +87,7 @@ const CropList = () => {
         });
     }
 
-    const Addcrop = async (values) => {
+    const AddCrop = async (values) => {
         setIsLoading(true)
         values.farmId = farm.id
         const res = await CropService.createCrop(values);
@@ -99,7 +99,7 @@ const CropList = () => {
         setIsLoading(false)
     }
 
-    const Editcrop = async (values) => {
+    const EditCrop = async (values) => {
         values.farmId = farm.id
         setIsLoading(true)
         const res = await CropService.updateCrop(selectedCrop.id, values);
@@ -238,7 +238,7 @@ const CropList = () => {
                     <Form
                         {...layout}
                         style={{ marginTop: 20 }}
-                        onFinish={mode ? Addcrop : Editcrop}
+                        onFinish={mode ? AddCrop : EditCrop}
                     >
                         <Form.Item
                             label="Crop"
@@ -246,7 +246,7 @@ const CropList = () => {
                             initialValue={selectedCrop?.description}
                             rules={[{ required: true, message: 'Crop is required' }]}
                         >
-                            <Input defaultValue={selectedCrop?.description} placeholder="Coffe"/>
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -255,7 +255,7 @@ const CropList = () => {
                             initialValue={selectedCrop?.year}
                             rules={[{ required: true, message: 'Year is required' }]}
                         >
-                            <Input defaultValue={selectedCrop?.year}  placeholder="2023"/>
+                            <Input placeholder="2023"/>
                         </Form.Item>
 
                         <Form.Item
@@ -264,7 +264,7 @@ const CropList = () => {
                             initialValue={selectedCrop?.start_date}
                             rules={[{ required: true, message: 'Start month is required' }]}
                         >
-                            <Input defaultValue={selectedCrop?.start_date}  placeholder="03"/>
+                            <Input placeholder="03"/>
                         </Form.Item>
 
                         <Form.Item
@@ -273,7 +273,7 @@ const CropList = () => {
                             initialValue={selectedCrop?.end_date}
                             rules={[{ required: true, message: 'End month is required' }]}
                         >
-                            <Input defaultValue={selectedCrop?.end_date}  placeholder="12"/>
+                            <Input placeholder="12"/>
                         </Form.Item>
 
                         <Form.Item>

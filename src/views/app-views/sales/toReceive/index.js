@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
+import { Row, Col, Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
+import StatisticWidget from 'components/shared-components/StatisticWidget';
 import ToReceiveService from 'services/ToReceiveService';
 import ProductSaleService from 'services/ProductSaleService';
 import PayMethodService from 'services/PayMethodService';
@@ -10,7 +11,6 @@ import { setProductSale, setProductSales} from 'store/slices/productSaleSlice';
 import { setToReceives } from 'store/slices/toReceiveSlice';
 import { setPayMethod, setPayMethods } from 'store/slices/payMethodSlice';
 import FarmService from 'services/FarmService';
-import dayjs from 'dayjs';
 
 const layout = {
     labelCol: { span: 5 },
@@ -20,14 +20,13 @@ const layout = {
 const { Option } = Select;
 
 const dateFormat = 'DD/MM/YYYY';
-const dateFormat1 = "YYYY-MM-DD";
 
 const ToReceiveList = () => {
 
     const { user } = useSelector(state => state.auth)
     const { farm, farms } = useSelector(state => state.farm)
     const { productSale, productSales } = useSelector(state => state.productSale)
-    const { toReceive, toReceives } = useSelector(state => state.toReceive)
+    const { toReceives } = useSelector(state => state.toReceive)
     const { payMethod, payMethods } = useSelector(state => state.payMethod)
     const dispatch = useDispatch()
 
@@ -58,6 +57,7 @@ const ToReceiveList = () => {
 
     const getProductSales = async (id) => {
         dispatch(setProductSales([]))
+        dispatch(setToReceives([]))
         const res = await ProductSaleService.getProductSalesByFarm(id)
         if (res) {
             dispatch(setProductSales(res))
@@ -317,6 +317,36 @@ const ToReceiveList = () => {
 
     return (
         <>
+            <Row gutter={16}>
+                <Col xs={24} sm={24} md={24} lg={24}>
+                    <Row gutter={16}>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                            <StatisticWidget 
+                                title="Farm" 
+                                value={farm ? String(farm.description) : String('')}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                            <StatisticWidget 
+                                title="Sale Id" 
+                                value={productSale ? String(productSale.id) : String('')}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                            <StatisticWidget 
+                                title= "Total Installment" 
+                                value={productSale ? String(productSale.total_installment) : String('')}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                            <StatisticWidget 
+                                title= "Amount Money" 
+                                value={productSale ? String(productSale.amount_money) : String('')}
+                            />
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
             <Card bodyStyle={{ 'padding': '10px' }}>
                 <label>Farms:&nbsp;&nbsp;</label>
                 {farms.length > 0 &&
@@ -363,11 +393,13 @@ const ToReceiveList = () => {
                         <Form.Item
                             label="Method"
                         >
+                            {payMethods.length > 0 &&
                             <Select defaultValue={mode ? payMethods[0].id : selectedToReceive?.paymentMethod.id} onChange={(value) => selectPayMethod(value)}>
                                 {payMethods.map((payMethod, index) => (
                                     <Option key={index + 1} value={payMethod.id}>{payMethod.description}</Option>
                                 ))}
                             </Select>
+                            }
                         </Form.Item>
 
                         <Form.Item

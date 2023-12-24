@@ -89,8 +89,11 @@ const PayDetailList = () => {
         }
     }
 
-    const getDate = async (val) => {
-        return val.split("T")[0]
+    const selectUnit= async (id) => {
+        const res = await UnitService.getUnitById(id)
+        if (res) {
+            dispatch(setUnit(res))
+        }
     }
 
     const AddBtnClick = () => {
@@ -117,7 +120,7 @@ const PayDetailList = () => {
                     try {
                         const res = await PurchaseDetailService.deletePurchaseDetail(id);
                         if (res) {
-                            message.success({ content: 'Bill to receive is deleted successfully', duration: 2.5 });
+                            message.success({ content: 'Bill to pay is deleted successfully', duration: 2.5 });
                             const filtered = purchaseDetails.filter((PurchaseDetail) => PurchaseDetail.id !== id);
                             dispatch(setPurchaseDetails(filtered));
                             resolve();
@@ -135,11 +138,12 @@ const PayDetailList = () => {
 
     const AddPurchaseDetail = async (values) => {
         setIsLoading(true)
-        values.paymentMethodId = product.id
+        values.productId = product.id
         values.purchaseId = purchase.id
+        values.unitId = unit.id
         const res = await PurchaseDetailService.createPurchaseDetail(values);
         if (res) {
-            message.success({ content: "Bill to receive is created successfully", duration: 2.5 });
+            message.success({ content: "Bill to pay is created successfully", duration: 2.5 });
             dispatch(setPurchaseDetails([...purchaseDetails, res]))
             setIsModalOpen(false);
         }
@@ -148,11 +152,12 @@ const PayDetailList = () => {
 
     const EditPurchaseDetail = async (values) => {
         setIsLoading(true)
-        values.paymentMethodId = product.id
+        values.productId = product.id
         values.purchaseId = purchase.id
+        values.unitId = unit.id
         const res = await PurchaseDetailService.updatePurchaseDetail(selectedPurchaseDetail.id, values);
         if (res) {
-            message.success({ content: "To Receive updated successfully", duration: 2.5 });
+            message.success({ content: "Bill to pay updated successfully", duration: 2.5 });
             const updatedPurchaseDetails = purchaseDetails.map((PurchaseDetail) => {
                 if (PurchaseDetail.id === selectedPurchaseDetail.id) return res;
                 else return PurchaseDetail
@@ -176,6 +181,7 @@ const PayDetailList = () => {
             getPurchases(farms[0].id)
             dispatch(setFarm(farms[0]))
             dispatch(setProduct(products[0]))
+            dispatch(setUnit(units[0]))
         }
     }, [farms])
 
@@ -203,6 +209,12 @@ const PayDetailList = () => {
             dispatch(setProduct(products[0]))
         }
     }, [products])
+
+    useEffect(() => {
+        if (units.length > 0) {
+            dispatch(setProduct(units[0]))
+        }
+    }, [units])
 
     const tableColumns = [
         {
@@ -352,11 +364,25 @@ const PayDetailList = () => {
                         <Form.Item
                             label="Product"
                         >
+                            {products.length > 0 &&
                             <Select defaultValue={mode ? products[0].id : selectedPurchaseDetail?.product.id} onChange={(value) => selectProduct(value)}>
                                 {products.map((product, index) => (
                                     <Option key={index + 1} value={product.id}>{product.description}</Option>
                                 ))}
                             </Select>
+                            }
+                        </Form.Item>
+
+                        <Form.Item
+                            label="Unit"
+                        >
+                            {units.length > 0 &&
+                            <Select defaultValue={mode ? units[0].id : selectedPurchaseDetail?.unit.id} onChange={(value) => selectUnit(value)}>
+                                {units.map((unit, index) => (
+                                    <Option key={index + 1} value={unit.id}>{unit.description}, {unit.type}</Option>
+                                ))}
+                            </Select>
+                            }
                         </Form.Item>
 
                         <Form.Item

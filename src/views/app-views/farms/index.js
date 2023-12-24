@@ -222,7 +222,7 @@ const FarmList = () => {
                             rules={[{ required: true, message: 'Please input your description!' }]}
                             initialValue={selectedFarm?.description}
                         >
-                            <Input.TextArea defaultValue={selectedFarm?.description} />
+                            <Input.TextArea />
                         </Form.Item>
 
                         <Form.Item
@@ -230,7 +230,7 @@ const FarmList = () => {
                             name="address"
                             initialValue={selectedFarm?.address}
                         >
-                            <Input defaultValue={selectedFarm?.address} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -238,7 +238,7 @@ const FarmList = () => {
                             name="city"
                             initialValue={selectedFarm?.city}
                         >
-                            <Input defaultValue={selectedFarm?.city} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -246,7 +246,7 @@ const FarmList = () => {
                             name="state"
                             initalValue={selectedFarm?.state}
                         >
-                            <Input defaultValue={selectedFarm?.state} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -254,7 +254,7 @@ const FarmList = () => {
                             name="zipcode"
                             initialValue={selectedFarm?.zipcode}
                         >
-                            <Input defaultValue={selectedFarm?.zipcode} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item>

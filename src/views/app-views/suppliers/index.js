@@ -292,7 +292,7 @@ const SupplierList = () => {
                             })]}
                             initialValue={selectedSupplier?.name}
                         >
-                            <Input defaultValue={selectedSupplier?.name} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -300,7 +300,7 @@ const SupplierList = () => {
                             name="cnpj"
                             initialValue={selectedSupplier?.cnpj}
                         >
-                            <Input defaultValue={selectedSupplier?.cnpj} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -308,7 +308,7 @@ const SupplierList = () => {
                             name="city"
                             initialValue={selectedSupplier?.city}
                         >
-                            <Input defaultValue={selectedSupplier?.city} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -316,7 +316,7 @@ const SupplierList = () => {
                             name="state"
                             initialValue={selectedSupplier?.state}
                         >
-                            <Input defaultValue={selectedSupplier?.state} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -324,7 +324,7 @@ const SupplierList = () => {
                             name="phone"
                             initialValue={selectedSupplier?.phone}
                         >
-                            <Input defaultValue={selectedSupplier?.phone} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -332,7 +332,7 @@ const SupplierList = () => {
                             name="email"
                             initialValue={selectedSupplier?.email}
                         >
-                            <Input defaultValue={selectedSupplier?.email} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -340,7 +340,7 @@ const SupplierList = () => {
                             name="street"
                             initialValue={selectedSupplier?.street}
                         >
-                            <Input defaultValue={selectedSupplier?.street} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item>

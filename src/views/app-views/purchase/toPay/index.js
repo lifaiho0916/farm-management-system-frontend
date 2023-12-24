@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
+import { Row, Col, Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
+import StatisticWidget from 'components/shared-components/StatisticWidget';
 import ToPayService from 'services/ToPayService';
 import PurchaseService from 'services/PurchaseService';
 import PayMethodService from 'services/PayMethodService';
@@ -25,7 +26,7 @@ const ToPayList = () => {
     const { user } = useSelector(state => state.auth)
     const { farm, farms } = useSelector(state => state.farm)
     const { purchase, purchases } = useSelector(state => state.purchase)
-    const { toPay, toPays } = useSelector(state => state.toPay)
+    const { toPays } = useSelector(state => state.toPay)
     const { payMethod, payMethods } = useSelector(state => state.payMethod)
     const dispatch = useDispatch()
 
@@ -315,6 +316,36 @@ const ToPayList = () => {
 
     return (
         <>
+            <Row gutter={16}>
+                <Col xs={24} sm={24} md={24} lg={24}>
+                    <Row gutter={16}>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                            <StatisticWidget 
+                                title="Farm" 
+                                value={farm ? String(farm.description) : String('')}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                            <StatisticWidget 
+                                title="Sale Id" 
+                                value={purchase ? String(purchase.id) : String('')}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                            <StatisticWidget 
+                                title= "Total Installment" 
+                                value={purchase ? String(purchase.totalInstallment) : String('')}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                            <StatisticWidget 
+                                title= "Total Price" 
+                                value={purchase ? String(purchase.totalPrice) : String('')}
+                            />
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
             <Card bodyStyle={{ 'padding': '10px' }}>
                 <label>Farms:&nbsp;&nbsp;</label>
                 {farms.length > 0 &&
@@ -363,11 +394,13 @@ const ToPayList = () => {
                         <Form.Item
                             label="Method"
                         >
+                            {payMethods.length > 0 &&
                             <Select defaultValue={mode ? payMethods[0].id : selectedToPay?.paymentMethod.id} onChange={(value) => selectPayMethod(value)}>
                                 {payMethods.map((payMethod, index) => (
                                     <Option key={index + 1} value={payMethod.id}>{payMethod.description}</Option>
                                 ))}
                             </Select>
+                            }
                         </Form.Item>
 
                         <Form.Item

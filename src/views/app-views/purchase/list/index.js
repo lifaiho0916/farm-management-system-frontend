@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
+import { Row, Col, Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
+import StatisticWidget from 'components/shared-components/StatisticWidget';
 import PurchaseService from 'services/PurchaseService';
 import SupplierService from 'services/SupplierService';
 import { useSelector, useDispatch } from 'react-redux';
@@ -240,6 +241,30 @@ const PurchaseList = () => {
 
     return (
         <>
+            <Row gutter={16}>
+                <Col xs={24} sm={24} md={24} lg={24}>
+                    <Row gutter={16}>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={8}>
+                            <StatisticWidget 
+                                title="Farms" 
+                                value={farms.length > 0 ? String(farms.length) : String('0')}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={8}>
+                            <StatisticWidget 
+                                title="Suppliers" 
+                                value={suppliers.length > 0 ? String(suppliers.length) : String('0')}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={8}>
+                            <StatisticWidget 
+                                title= "Purchases" 
+                                value={purchases.length > 0 ? String(purchases.length) : String('0')}
+                            />
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
             <Card bodyStyle={{ 'padding': '10px' }}>
                 {farms.length > 0 &&
                     <Select onChange={(value) => { getPurchases(value) }} defaultValue={farms[0].id}>
@@ -268,11 +293,13 @@ const PurchaseList = () => {
                         <Form.Item
                             label="Supplier"
                         >
+                            {suppliers.length > 0 &&
                             <Select defaultValue={mode ? suppliers[0].id : selectedPurchase?.supplier.id} onChange={(value) => selectSupplier(value)}>
                                 {suppliers.map((supplier, index) => (
                                     <Option key={index + 1} value={supplier.id}>{supplier.name}, {supplier.email}</Option>
                                 ))}
                             </Select>
+                            }
                         </Form.Item>
 
                         <Form.Item

@@ -301,20 +301,24 @@ const ProductList = () => {
                         <Form.Item
                             label="Category"
                         >
+                            {categories.length > 0 &&
                             <Select defaultValue={mode ? categories[0].id : selectedProduct?.category.id} onChange={(value) => selectCategory(value)}>
                                 {categories.map((category, index) => (
                                     <Option key={index + 1} value={category.id}>{category.description}</Option>
                                 ))}
                             </Select>
+                            }
                         </Form.Item>
                         <Form.Item
                             label="Unit"
                         >
+                            {units.length > 0 &&
                             <Select defaultValue={mode ? units[0].id : selectedProduct?.unit.id} onChange={(value) => selectUnit(value)}>
                                 {units.map((unit, index) => (
                                     <Option key={index + 1} value={unit.id}>{unit.description}, {unit.type}</Option>
                                 ))}
                             </Select>
+                            }
                         </Form.Item>
                         <Form.Item
                             label="Product"

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
+import { Row, Col, Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
+import StatisticWidget from 'components/shared-components/StatisticWidget';
 import ProductSaleService from 'services/ProductSaleService';
 import SupplierService from 'services/SupplierService';
 import ProductCropService from 'services/ProductCropService';
@@ -8,7 +9,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { setFarm, setFarms } from 'store/slices/farmSlice';
 import { setSupplier, setSuppliers } from 'store/slices/supplierSlice';
 import { setProductCrop, setProductCrops } from 'store/slices/productCropSlice';
-import { setProductSale, setProductSales } from 'store/slices/productSaleSlice';
+import { setProductSales } from 'store/slices/productSaleSlice';
 import FarmService from 'services/FarmService';
 
 const layout = {
@@ -26,7 +27,7 @@ const SaleList = () => {
     const { farm, farms } = useSelector(state => state.farm)
     const { productCrop, productCrops } = useSelector(state => state.productCrop)
     const { supplier, suppliers } = useSelector(state => state.supplier)
-    const { productSale, productSales } = useSelector(state => state.productSale)
+    const { productSales } = useSelector(state => state.productSale)
     const dispatch = useDispatch()
 
     const handleCancel = () => {
@@ -315,6 +316,36 @@ const SaleList = () => {
 
     return (
         <>
+            <Row gutter={16}>
+                <Col xs={24} sm={24} md={24} lg={24}>
+                    <Row gutter={16}>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                            <StatisticWidget 
+                                title="Farms" 
+                                value={farms.length > 0 ? String(farm.length) : String('0')}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                            <StatisticWidget 
+                                title="Product Crops" 
+                                value={productCrops.length > 0 ? String(productCrops.length) : String('0')}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                            <StatisticWidget 
+                                title= "Product Sales" 
+                                value={productSales.length > 0 ? String(productSales.length) : String('0')}
+                            />
+                        </Col>
+                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
+                            <StatisticWidget 
+                                title= "Suppliers" 
+                                value={suppliers.length > 0 ? String(suppliers.length) : String('0')}
+                            />
+                        </Col>
+                    </Row>
+                </Col>
+            </Row>
             <Card bodyStyle={{ 'padding': '10px' }}>
                 <label>Farms:&nbsp;&nbsp;</label>
                 {farms.length > 0 &&
@@ -340,24 +371,29 @@ const SaleList = () => {
                         style={{ marginTop: 20 }}
                         onFinish={mode ? AddProductSale : EditProductSale}
                     >
+                        
                         <Form.Item
                             label="Crop"
                         >
+                            {productCrops.length > 0 &&
                             <Select defaultValue={mode ? productCrops[0].id : selectedProductSale?.productCrop.id} onChange={(value) => selectProductCrop(value)}>
                                 {productCrops.map((productCrop, index) => (
                                     <Option key={index + 1} value={productCrop.id}>{productCrop.crop.description}, {productCrop.crop.year}</Option>
                                 ))}
                             </Select>
+                            }
                         </Form.Item>
 
                         <Form.Item
                             label="Supplier"
                         >
+                            {suppliers.length > 0 &&
                             <Select defaultValue={mode ? suppliers[0].id : selectedProductSale?.supplier.id} onChange={(value) => selectSupplier(value)}>
                                 {suppliers.map((supplier, index) => (
                                     <Option key={index + 1} value={supplier.id}>{supplier.name}</Option>
                                 ))}
                             </Select>
+                            }
                         </Form.Item>
 
                         {mode &&

@@ -262,7 +262,7 @@ const ProductCropList = () => {
                             initialValue={selectedProductCrop?.crop.description}
                             rules={[{ required: true, message: 'Crop is required' }]}
                         >
-                            <Input defaultValue={selectedProductCrop?.crop.description} placeholder="Coffe"/>
+                            <Input />
                         </Form.Item>
 
                         <Form.Item
@@ -271,7 +271,7 @@ const ProductCropList = () => {
                             initialValue={selectedProductCrop?.unit.description}
                             rules={[{ required: true, message: 'Unit is required' }]}
                         >
-                            <Input defaultValue={selectedProductCrop?.unit.description}  placeholder="60kg"/>
+                            <Input placeholder="60kg"/>
                         </Form.Item>
 
                         <Form.Item
@@ -280,7 +280,7 @@ const ProductCropList = () => {
                             initialValue={selectedProductCrop?.unit.type}
                             rules={[{ required: true, message: 'Type is required' }]}
                         >
-                            <Input defaultValue={selectedProductCrop?.unit.type}  placeholder="Sack"/>
+                            <Input placeholder="Sack"/>
                         </Form.Item>
 
                         <Form.Item
@@ -289,7 +289,7 @@ const ProductCropList = () => {
                             initialValue={selectedProductCrop?.quantity}
                             rules={[{ required: true, message: 'Quantity is required' }]}
                         >
-                            <Input defaultValue={selectedProductCrop?.quantity}  placeholder="12"/>
+                            <Input placeholder="12"/>
                         </Form.Item>
 
                         {mode &&
