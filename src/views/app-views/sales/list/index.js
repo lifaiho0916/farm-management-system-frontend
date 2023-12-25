@@ -322,7 +322,7 @@ const SaleList = () => {
                         <Col xs={24} sm={24} md={24} lg={24} xl={6}>
                             <StatisticWidget 
                                 title="Farms" 
-                                value={farms.length > 0 ? String(farm.length) : String('0')}
+                                value={farms.length > 0 ? String(farms.length) : String('0')}
                             />
                         </Col>
                         <Col xs={24} sm={24} md={24} lg={24} xl={6}>

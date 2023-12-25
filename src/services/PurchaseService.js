@@ -12,6 +12,26 @@ PurchaseService.getPurchaseByFarm = async (id) => {
     return undefined
 }
 
+PurchaseService.getPurchaseByAdmin = async (id) => {
+    try {
+        const res = await API.get(`purchasesAdmin/${id}`)
+        return res
+    } catch (err) {
+        console.log(err)
+    }
+    return undefined
+}
+
+PurchaseService.getPurchaseById = async (id) => {
+    try {
+        const res = await API.get(`purchase/${id}`)
+        return res
+    } catch (err) {
+        console.log(err)
+    }
+    return undefined
+}
+
 PurchaseService.createPurchase = async (data) => {
     try {
         const res = await API.post(`/purchase`, data)
