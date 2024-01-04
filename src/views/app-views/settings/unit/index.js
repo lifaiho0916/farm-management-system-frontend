@@ -180,7 +180,7 @@ const UnitList = () => {
                             rules={[{ required: true, message: 'Please input Unit' }]}
                             initialValue={selectedUnit?.description}
                         >
-                            <Input defaultValue={selectedUnit?.description} />
+                            <Input />
                         </Form.Item>
                         <Form.Item
                             label="Type"
@@ -188,7 +188,7 @@ const UnitList = () => {
                             rules={[{ required: true, message: 'Please input Type' }]}
                             initialValue={selectedUnit?.type}
                         >
-                            <Input defaultValue={selectedUnit?.type} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item>

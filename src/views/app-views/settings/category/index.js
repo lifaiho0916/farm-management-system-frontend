@@ -168,7 +168,7 @@ const CategoryList = () => {
                             rules={[{ required: true, message: 'Please input category' }]}
                             initialValue={selectedCategory?.description}
                         >
-                            <Input defaultValue={selectedCategory?.description} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item>

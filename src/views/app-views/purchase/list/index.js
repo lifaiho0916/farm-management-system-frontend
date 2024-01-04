@@ -9,6 +9,7 @@ import { setFarm, setFarms } from 'store/slices/farmSlice';
 import { setSupplier, setSuppliers } from 'store/slices/supplierSlice';
 import { setPurchases } from 'store/slices/purchaseSlice';
 import FarmService from 'services/FarmService';
+import { useNavigate, useSearchParams } from 'react-router-dom'
 
 const layout = {
     labelCol: { span: 5 },
@@ -26,6 +27,10 @@ const PurchaseList = () => {
     const { supplier, suppliers } = useSelector(state => state.supplier)
     const { purchases } = useSelector(state => state.purchase)
     const dispatch = useDispatch()
+
+    const navigate = useNavigate()
+    const [searchParams,] = useSearchParams()
+    const redirect = searchParams.get('redirect')
 
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -69,9 +74,10 @@ const PurchaseList = () => {
     }
 
     const AddBtnClick = () => {
+        // navigate(redirect ? redirect : '/app/purchase/detail')
         setSelectedPurchase(null)
-        setIsModalOpen(true);
-        setMode(true);
+        setIsModalOpen(true)
+        setMode(true)
     };
 
     const EditBtnClick = (id) => {
@@ -300,23 +306,6 @@ const PurchaseList = () => {
                                 ))}
                             </Select>
                             }
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Total Price"
-                            name="totalPrice"
-                            rules={[{ required: true, message: 'Please input total price' }]}
-                            initialValue={selectedPurchase?.totalPrice}
-                        >
-                            <Input />
-                        </Form.Item>
-
-                        <Form.Item
-                            label="Total Installment"
-                            name="totalInstallment"
-                            initialValue={selectedPurchase?.totalInstallment}
-                        >
-                            <Input />
                         </Form.Item>
 
                         {mode &&

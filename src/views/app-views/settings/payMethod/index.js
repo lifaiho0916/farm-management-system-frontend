@@ -166,7 +166,7 @@ const PayMethodList = () => {
                             rules={[{ required: true, message: 'Please input PayMethod' }]}
                             initialValue={selectedPayMethod?.description}
                         >
-                            <Input defaultValue={selectedPayMethod?.description} />
+                            <Input />
                         </Form.Item>
 
                         <Form.Item>
