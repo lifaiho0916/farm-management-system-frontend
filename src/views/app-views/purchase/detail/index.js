@@ -96,13 +96,6 @@ const PayDetailList = () => {
         }
     }
 
-    const selectPurchase= async (id) => {
-        const res = await PurchaseService.getPurchaseById(id)
-        if (res) {
-            dispatch(setPurchase(res))
-        }
-    }
-
     const selectProduct= async (id) => {
         const res = await ProductService.getProductById(id)
         if (res) {
@@ -175,7 +168,7 @@ const PayDetailList = () => {
         if (res) {
             message.success({ content: "Bill to pay is created successfully", duration: 2.5 });
             dispatch(setPurchaseDetails([...purchaseDetails, res]))
-            selectPurchase(purchase.id)
+            dispatch(setPurchase(res.purchase))
             setIsModalOpen(false);
         }
         setIsLoading(false)
@@ -194,7 +187,6 @@ const PayDetailList = () => {
                 else return PurchaseDetail
             })
             dispatch(setPurchaseDetails(updatedPurchaseDetails))
-            selectPurchase(purchase.id)
             setIsModalOpen(false);
         }
         setIsLoading(false)
@@ -221,8 +213,8 @@ const PayDetailList = () => {
 
     useEffect(() => {
         if (purchases.length > 0) {
-            getPurchaseDetails(purchases[0].id)
             dispatch(setPurchase(purchases[0]))
+            getPurchaseDetails(purchases[0].id)
         }
     }, [purchases])
 
@@ -231,12 +223,6 @@ const PayDetailList = () => {
             getPurchases(farm.id)
         }
     }, [farm])
-
-    useEffect(() => {
-        if(purchase) {
-            getPurchaseDetails(purchase.id)
-        }
-    }, [purchase])
 
     useEffect(() => {
         if (products.length > 0) {
