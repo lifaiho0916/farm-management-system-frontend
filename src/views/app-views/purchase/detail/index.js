@@ -144,6 +144,7 @@ const PayDetailList = () => {
                             message.success({ content: 'Bill to pay is deleted successfully', duration: 2.5 });
                             const filtered = purchaseDetails.filter((PurchaseDetail) => PurchaseDetail.id !== id);
                             dispatch(setPurchaseDetails(filtered));
+                            dispatch(setPurchase(res))
                             resolve();
                         } else {
                             reject();
@@ -187,6 +188,7 @@ const PayDetailList = () => {
                 else return PurchaseDetail
             })
             dispatch(setPurchaseDetails(updatedPurchaseDetails))
+            dispatch(setPurchase(res.purchase))
             setIsModalOpen(false);
         }
         setIsLoading(false)
@@ -307,16 +309,16 @@ const PayDetailList = () => {
                     <div>
                         <h2 className="mb-1 font-weight-semibold">Purchase Detail</h2>
                         <address>
-                            <label>&nbsp;&nbsp;Farms:&nbsp;&nbsp;</label>
+                            <label className='mt-3'>&nbsp;&nbsp;Farms:&nbsp;&nbsp;</label>
                             {farms.length > 0 &&
-                                <Select onChange={(value) => { getPurchases(value) }} defaultValue={farms[0].id}>
+                                <Select className='mt-3' onChange={(value) => { getPurchases(value) }} defaultValue={farms[0].id}>
                                     {farms.map((farm, index) => (
                                         <Option key={index} value={farm.id}>{farm.description}</Option>
                                     ))}
                                 </Select>
                             }
                             
-                            <label className='mt-3'><br></br>&nbsp;&nbsp;Purchase Id:&nbsp;&nbsp;</label>
+                            <label className='mt-3'><br></br>&nbsp;&nbsp;Purchase ID:&nbsp;&nbsp;</label>
                             {purchases.length > 0 &&
                                 <Select className='mt-3' onChange={(value) => { getPurchaseDetails(value) }} defaultValue = {purchases[0].id}>
                                     {purchases.map((Purchase, index) => (
@@ -324,6 +326,19 @@ const PayDetailList = () => {
                                     ))}
                                 </Select>
                             }
+                        </address>
+                    </div>
+                    <div className="mt-3 text-right">
+                        <h2 className="mb-1 font-weight-semibold">Farm: {farm?.description}</h2>
+                        <address>
+                            <p>
+                                {purchase &&
+                                <>
+                                <span className="font-weight-semibold text-dark font-size-md">Purchase ID: {purchase.id}</span><br />
+                                <span>Total Price: {purchase.totalPrice}</span>
+                                </>
+                                }
+                            </p>
                         </address>
                     </div>
                 </div>

@@ -44,7 +44,7 @@ ToPayService.updatedToPay = async (id, data) => {
 
 ToPayService.deleteToPay = async (id) => {
     try {
-        const res = await API.delete(`/toPay1/${id}`)
+        const res = await API.delete(`/toPay/${id}`)
         return res
     } catch (err) {
         console.log(err)

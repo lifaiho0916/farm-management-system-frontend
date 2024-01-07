@@ -34,7 +34,7 @@ PurchaseDetailService.updatePurchaseDetail = async (id, data) => {
 
 PurchaseDetailService.deletePurchaseDetail = async (id) => {
     try {
-        const res = await API.delete(`/purchaseDetail1/${id}`)
+        const res = await API.delete(`/purchaseDetail/${id}`)
         return res
     } catch (err) {
         console.log(err)

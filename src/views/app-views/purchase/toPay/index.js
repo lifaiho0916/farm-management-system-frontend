@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { Row, Col, Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
+import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
 import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
-import StatisticWidget from 'components/shared-components/StatisticWidget';
 import ToPayService from 'services/ToPayService';
 import PurchaseService from 'services/PurchaseService';
 import PayMethodService from 'services/PayMethodService';
+import FarmService from 'services/FarmService';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFarm, setFarms } from 'store/slices/farmSlice';
 import { setPurchase, setPurchases} from 'store/slices/purchaseSlice';
 import { setToPays } from 'store/slices/toPaySlice';
 import { setPayMethod, setPayMethods } from 'store/slices/payMethodSlice';
-import FarmService from 'services/FarmService';
 
 const layout = {
     labelCol: { span: 5 },
@@ -69,6 +68,7 @@ const ToPayList = () => {
         const res = await ToPayService.getToPayByPurchase(id)
         if (res) {
             dispatch(setToPays(res))
+            dispatch(setPurchase(purchases.filter((purchase) => purchase.id === id)[0]))
         }
     }
 
@@ -77,10 +77,6 @@ const ToPayList = () => {
         if (res) {
             dispatch(setPayMethod(res))
         }
-    }
-
-    const getDate = async (val) => {
-        return val.split("T")[0]
     }
 
     const AddBtnClick = () => {
@@ -105,11 +101,12 @@ const ToPayList = () => {
             onOk() {
                 return new Promise(async (resolve, reject) => {
                     try {
-                        const res = await ToPayService.deletetoPay(id);
+                        const res = await ToPayService.deleteToPay(id);
                         if (res) {
                             message.success({ content: 'Bill to receive is deleted successfully', duration: 2.5 });
                             const filtered = toPays.filter((toPay) => toPay.id !== id);
                             dispatch(setToPays(filtered));
+                            dispatch(setPurchase(res))
                             resolve();
                         } else {
                             reject();
@@ -131,6 +128,7 @@ const ToPayList = () => {
         if (res) {
             message.success({ content: "Bill to receive is created successfully", duration: 2.5 });
             dispatch(setToPays([...toPays, res]))
+            dispatch(setPurchase(res.purchase))
             setIsModalOpen(false);
         }
         setIsLoading(false)
@@ -148,6 +146,7 @@ const ToPayList = () => {
                 else return toPay
             })
             dispatch(setToPays(updatedToPays))
+            dispatch(setPurchase(res.purchase))
             setIsModalOpen(false);
         }
         setIsLoading(false)
@@ -182,12 +181,6 @@ const ToPayList = () => {
     }, [farm])
 
     useEffect(() => {
-        if(purchase) {
-            getToPays(purchase.id)
-        }
-    }, [purchase])
-
-    useEffect(() => {
         if (payMethods.length > 0) {
             dispatch(setPayMethod(payMethods[0]))
         }
@@ -201,60 +194,11 @@ const ToPayList = () => {
             )
         },
         {
-            title: 'Purchase Id',
-            dataIndex: 'purchase',
-            render: purchase => (
-                <span>{purchase.id}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.purchase.id.toLowerCase();
-                    b = b.purchase.id.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
             title: 'Amount',
             dataIndex: 'amount',
             render: amount => (
                 <span>{amount}</span>
             ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.amount.toLowerCase();
-                    b = b.amount.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
-            title: 'Paid Amount',
-            dataIndex: 'amount_paid',
-            render: amount_paid => (
-                <span>{amount_paid}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.amount_paid.toLowerCase();
-                    b = b.amount_paid.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
-            title: 'Pay Method',
-            dataIndex: 'paymentMethod',
-            render: paymentMethod => (
-                <span>{paymentMethod.description}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.paymentMethod.description.toLowerCase();
-                    b = b.paymentMethod.description.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
         },
         {
             title: 'Installment',
@@ -262,13 +206,20 @@ const ToPayList = () => {
             render: installment => (
                 <span>{installment}</span>
             ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.installment.toLowerCase();
-                    b = b.installment.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
+        },
+        {
+            title: 'Paid Amount',
+            dataIndex: 'amount_paid',
+            render: amount_paid => (
+                <span>{amount_paid}</span>
+            ),
+        },
+        {
+            title: 'Pay Method',
+            dataIndex: 'paymentMethod',
+            render: paymentMethod => (
+                <span>{paymentMethod.description}</span>
+            ),
         },
         {
             title: 'Expected Date',
@@ -276,13 +227,6 @@ const ToPayList = () => {
             render: expected_payment_date => (
                 <span>{expected_payment_date}</span>
             ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.expected_payment_date.toLowerCase();
-                    b = b.expected_payment_date.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
         },
         {
             title: 'Received Date',
@@ -290,13 +234,6 @@ const ToPayList = () => {
             render: payment_date_made => (
                 <span>{payment_date_made}</span>
             ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.payment_date_made.toLowerCase();
-                    b = b.payment_date_made.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
         },
         {
             title: '',
@@ -316,63 +253,50 @@ const ToPayList = () => {
 
     return (
         <>
-            <Row gutter={16}>
-                <Col xs={24} sm={24} md={24} lg={24}>
-                    <Row gutter={16}>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
-                            <StatisticWidget 
-                                title="Farm" 
-                                value={farm ? String(farm.description) : String('')}
-                            />
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
-                            <StatisticWidget 
-                                title="Sale Id" 
-                                value={purchase ? String(purchase.id) : String('')}
-                            />
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
-                            <StatisticWidget 
-                                title= "Total Installment" 
-                                value={purchase ? String(purchase.totalInstallment) : String('')}
-                            />
-                        </Col>
-                        <Col xs={24} sm={24} md={24} lg={24} xl={6}>
-                            <StatisticWidget 
-                                title= "Total Price" 
-                                value={purchase ? String(purchase.totalPrice) : String('')}
-                            />
-                        </Col>
-                    </Row>
-                </Col>
-            </Row>
             <Card bodyStyle={{ 'padding': '10px' }}>
-                <label>Farms:&nbsp;&nbsp;</label>
-                {farms.length > 0 &&
-                    <Select onChange={(value) => { getPurchases(value) }} defaultValue={farms[0].id}>
-                        {farms.map((farm, index) => (
-                            <Option key={index} value={farm.id}>{farm.description}</Option>
-                        ))}
-                    </Select>
-                }
-                {purchases.length > 0 &&
-                <label><br></br>Purchase Id:&nbsp;&nbsp;</label>
-                }
-                {purchases.length > 0 && 
-                    <Select onChange={(value) => { getToPays(value) }} defaultValue={farms[0].id}>
-                        {purchases.map((Purchase, index) => (
-                            <Option key={index} value={Purchase.id}>{Purchase.id}</Option>
-                        ))}
-                    </Select>
-                }
-                {purchases.length > 0 && 
-                    <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
-                        Add
-                    </Button>
-                }
-                <div className="table-responsive">
+                <div className="d-md-flex justify-content-md-between">
+                    <div>
+                        <h2 className="mb-1 font-weight-semibold">Bills to Pay</h2>
+                        <label className='mt-3'>Farms:&nbsp;&nbsp;</label>
+                        {farms.length > 0 &&
+                            <Select className='mt-3' onChange={(value) => { getPurchases(value) }} defaultValue={farms[0].id}>
+                                {farms.map((farm, index) => (
+                                    <Option key={index} value={farm.id}>{farm.description}</Option>
+                                ))}
+                            </Select>
+                        }
+                        {purchases.length > 0 &&
+                        <label className='mt-3'><br></br>Purchase ID:&nbsp;&nbsp;</label>
+                        }
+                        {purchases.length > 0 && 
+                            <Select className='mt-3' onChange={(value) => { getToPays(value) }} defaultValue={purchases[0].id}>
+                                {purchases.map((Purchase, index) => (
+                                    <Option key={index} value={Purchase.id}>{Purchase.id}</Option>
+                                ))}
+                            </Select>
+                        }
+                    </div>
+                    <div className="mt-3 text-right">
+                        <h2 className="mb-1 font-weight-semibold">Farm: {farm?.description}</h2>
+                        <address>
+                            <p>
+                                {purchase &&
+                                <>
+                                <span className="font-weight-semibold text-dark font-size-md">Purchase ID: {purchase.id}</span><br />
+                                <span>Total Installment: {purchase.totalInstallment}</span><br />
+                                <span>Total Price: {purchase.totalPrice}</span>
+                                </>
+                                }
+                            </p>
+                        </address>
+                    </div>
+                </div>
+                <div className="mt-4">
                     <Table columns={tableColumns} dataSource={toPays} rowKey='id' />
                 </div>
+                <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
+                    Add
+                </Button>
             </Card>
             {isModalOpen &&
                 <Modal title={mode ? 'Add' : 'Edit'} open={isModalOpen} footer={null} onCancel={handleCancel}>

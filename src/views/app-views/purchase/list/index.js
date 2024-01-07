@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Row, Col, Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
-import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
+import { Row, Col, Card, Table, Tooltip, Button, Modal, Form, message, Select, DatePicker } from 'antd';
+import { EyeOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
 import StatisticWidget from 'components/shared-components/StatisticWidget';
 import PurchaseService from 'services/PurchaseService';
 import SupplierService from 'services/SupplierService';
@@ -9,7 +9,7 @@ import { setFarm, setFarms } from 'store/slices/farmSlice';
 import { setSupplier, setSuppliers } from 'store/slices/supplierSlice';
 import { setPurchases } from 'store/slices/purchaseSlice';
 import FarmService from 'services/FarmService';
-import { useNavigate, useSearchParams } from 'react-router-dom'
+import { useNavigate} from 'react-router-dom'
 
 const layout = {
     labelCol: { span: 5 },
@@ -29,8 +29,6 @@ const PurchaseList = () => {
     const dispatch = useDispatch()
 
     const navigate = useNavigate()
-    const [searchParams,] = useSearchParams()
-    const redirect = searchParams.get('redirect')
 
     const handleCancel = () => {
         setIsModalOpen(false);
@@ -86,32 +84,8 @@ const PurchaseList = () => {
         setMode(false);
     }
 
-    const DeleteBtnClick = (id) => {
-        Modal.confirm({
-            title: 'Confirm',
-            icon: <ExclamationCircleOutlined />,
-            content: 'Are you sure you want to delete?',
-            okText: 'Yes',
-            cancelText: 'No',
-            onOk() {
-                return new Promise(async (resolve, reject) => {
-                    try {
-                        const res = await PurchaseService.deletePurchase(id);
-                        if (res) {
-                            message.success({ content: 'Purchase deleted successfully', duration: 2.5 });
-                            const filtered = purchases.filter((Purchase) => Purchase.id !== id);
-                            dispatch(setPurchases(filtered));
-                            resolve();
-                        } else {
-                            reject();
-                        }
-                    } catch (error) {
-                        console.log('Oops errors!');
-                        reject();
-                    }
-                });
-            },
-        });
+    const ViewBtnClick = (id) => {
+        navigate('/app/purchase/detail')
     }
 
     const AddPurchase = async (values) => {
@@ -237,8 +211,8 @@ const PurchaseList = () => {
                     <Tooltip title="Edit">
                         <Button className="mr-2" icon={<EditOutlined />} onClick={() => EditBtnClick(elm.id)} size="small" />
                     </Tooltip>
-                    <Tooltip title="Delete">
-                        <Button icon={<DeleteOutlined />} onClick={() => DeleteBtnClick(elm.id)} size="small" />
+                    <Tooltip title="Detail">
+                        <Button icon={<EyeOutlined />} onClick={() => ViewBtnClick(elm.id)} size="small" />
                     </Tooltip>
                 </div>
             )
