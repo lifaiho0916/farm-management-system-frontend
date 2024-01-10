@@ -1,17 +1,20 @@
 import React, { useEffect, useState } from 'react'
 import { Card, Table, Tooltip, Button, Modal, Input, Form, message, Select, DatePicker } from 'antd';
-import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, ExclamationCircleOutlined, EditOutlined, PrinterOutlined } from '@ant-design/icons';
 import PurchaseDetailService from 'services/PurchaseDetailService';
+import FarmService from 'services/FarmService';
 import PurchaseService from 'services/PurchaseService';
 import ProductService from 'services/ProductService';
 import UnitService from 'services/UnitService';
+import SupplierService from 'services/SupplierService';
 import { useSelector, useDispatch } from 'react-redux';
 import { setFarm, setFarms } from 'store/slices/farmSlice';
 import { setPurchase, setPurchases} from 'store/slices/purchaseSlice';
 import { setPurchaseDetails } from 'store/slices/purchaseDetailSlice';
 import { setProduct, setProducts } from 'store/slices/productSlice';
 import { setUnit, setUnits } from 'store/slices/unitSlice';
-import FarmService from 'services/FarmService';
+import { setSupplier, setSuppliers } from 'store/slices/supplierSlice';
+import { set } from 'lodash';
 
 const layout = {
     labelCol: { span: 5 },
@@ -27,7 +30,8 @@ const PayDetailList = () => {
     const { user } = useSelector(state => state.auth)
     const { farm, farms } = useSelector(state => state.farm)
     const { purchase, purchases } = useSelector(state => state.purchase)
-    const { purchaseDetail, purchaseDetails } = useSelector(state => state.purchaseDetail)
+    const { supplier, suppliers } = useSelector(state => state.supplier)
+    const { purchaseDetails } = useSelector(state => state.purchaseDetail)
     const { product, products } = useSelector(state => state.product)
     const { unit, units } = useSelector(state => state.unit)
     const dispatch = useDispatch()
@@ -57,6 +61,14 @@ const PayDetailList = () => {
         }
     }
 
+    const getSuppliers = async (id) => {
+        dispatch(setSuppliers([]))
+        const res = await SupplierService.getSuppliersByFarm(id)
+        if (res) {
+            dispatch(setSuppliers(res))
+        }
+    }
+
     const getUnits = async () => {
         dispatch(setUnits([]))
         const res = await UnitService.getAllUnit()
@@ -67,6 +79,7 @@ const PayDetailList = () => {
 
     const getPurchases = async (id) => {
         dispatch(setPurchases([]))
+        dispatch(setPurchaseDetails([]))
         const res = await PurchaseService.getPurchaseByFarm(id)
         if (res) {
             dispatch(setPurchases(res))
@@ -79,6 +92,7 @@ const PayDetailList = () => {
         const res = await PurchaseDetailService.getPurchaseDetailByPurchase(id)
         if (res) {
             dispatch(setPurchaseDetails(res))
+            dispatch(setPurchase(purchases.filter((purchase) => purchase.id === id)[0]))
         }
     }
 
@@ -93,6 +107,13 @@ const PayDetailList = () => {
         const res = await UnitService.getUnitById(id)
         if (res) {
             dispatch(setUnit(res))
+        }
+    }
+
+    const selectSupplier = async (id) => {
+        const res = await SupplierService.getSupplierById(id)
+        if (res) {
+            dispatch(setSupplier(res))
         }
     }
 
@@ -123,6 +144,7 @@ const PayDetailList = () => {
                             message.success({ content: 'Bill to pay is deleted successfully', duration: 2.5 });
                             const filtered = purchaseDetails.filter((PurchaseDetail) => PurchaseDetail.id !== id);
                             dispatch(setPurchaseDetails(filtered));
+                            dispatch(setPurchase(res))
                             resolve();
                         } else {
                             reject();
@@ -138,6 +160,8 @@ const PayDetailList = () => {
 
     const AddPurchaseDetail = async (values) => {
         setIsLoading(true)
+        values.farmId = farm.id;
+        values.supplierId = supplier.id
         values.productId = product.id
         values.purchaseId = purchase.id
         values.unitId = unit.id
@@ -145,6 +169,7 @@ const PayDetailList = () => {
         if (res) {
             message.success({ content: "Bill to pay is created successfully", duration: 2.5 });
             dispatch(setPurchaseDetails([...purchaseDetails, res]))
+            dispatch(setPurchase(res.purchase))
             setIsModalOpen(false);
         }
         setIsLoading(false)
@@ -163,6 +188,7 @@ const PayDetailList = () => {
                 else return PurchaseDetail
             })
             dispatch(setPurchaseDetails(updatedPurchaseDetails))
+            dispatch(setPurchase(res.purchase))
             setIsModalOpen(false);
         }
         setIsLoading(false)
@@ -179,16 +205,18 @@ const PayDetailList = () => {
     useEffect(() => {
         if (farms.length > 0) {
             getPurchases(farms[0].id)
+            getSuppliers(farms[0].id)
             dispatch(setFarm(farms[0]))
             dispatch(setProduct(products[0]))
             dispatch(setUnit(units[0]))
+            dispatch(setSupplier(suppliers[0]))
         }
     }, [farms])
 
     useEffect(() => {
         if (purchases.length > 0) {
-            getPurchaseDetails(purchases[0].id)
             dispatch(setPurchase(purchases[0]))
+            getPurchaseDetails(purchases[0].id)
         }
     }, [purchases])
 
@@ -199,12 +227,6 @@ const PayDetailList = () => {
     }, [farm])
 
     useEffect(() => {
-        if(purchase) {
-            getPurchaseDetails(purchase.id)
-        }
-    }, [purchase])
-
-    useEffect(() => {
         if (products.length > 0) {
             dispatch(setProduct(products[0]))
         }
@@ -212,9 +234,15 @@ const PayDetailList = () => {
 
     useEffect(() => {
         if (units.length > 0) {
-            dispatch(setProduct(units[0]))
+            dispatch(setUnit(units[0]))
         }
     }, [units])
+
+    useEffect(() => {
+        if (suppliers.length > 0) {
+            dispatch(setSupplier(suppliers[0]))
+        }
+    }, [suppliers])
 
     const tableColumns = [
         {
@@ -224,18 +252,11 @@ const PayDetailList = () => {
             )
         },
         {
-            title: 'Purchase Id',
-            dataIndex: 'purchase',
-            render: purchase => (
-                <span>{purchase.id}</span>
+            title: 'Lote',
+            dataIndex: 'lote',
+            render: lote => (
+                <span>{lote}</span>
             ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.purchase.id.toLowerCase();
-                    b = b.purchase.id.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
         },
         {
             title: 'Product',
@@ -243,13 +264,6 @@ const PayDetailList = () => {
             render: product => (
                 <span>{product.description}</span>
             ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.product.description.toLowerCase();
-                    b = b.product.description.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
         },
         {
             title: 'Unit',
@@ -257,27 +271,6 @@ const PayDetailList = () => {
             render: unit => (
                 <span>{unit.description}, {unit.type}</span>
             ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.unit.description.toLowerCase();
-                    b = b.unit.description.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
-        },
-        {
-            title: 'Quantity',
-            dataIndex: 'quantity',
-            render: quantity => (
-                <span>{quantity}</span>
-            ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.quantity.toLowerCase();
-                    b = b.quantity.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
         },
         {
             title: 'Price',
@@ -285,27 +278,13 @@ const PayDetailList = () => {
             render: price => (
                 <span>{price}</span>
             ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.price.toLowerCase();
-                    b = b.price.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
         },
         {
-            title: 'Lote',
-            dataIndex: 'lote',
-            render: lote => (
-                <span>{lote}</span>
+            title: 'Quantity',
+            dataIndex: 'quantity',
+            render: quantity => (
+                <span>{quantity}</span>
             ),
-            sorter: {
-                compare: (a, b) => {
-                    a = a.lote.toLowerCase();
-                    b = b.lote.toLowerCase();
-                    return a > b ? -1 : b > a ? 1 : 0;
-                },
-            },
         },
         {
             title: '',
@@ -326,31 +305,62 @@ const PayDetailList = () => {
     return (
         <>
             <Card bodyStyle={{ 'padding': '10px' }}>
-                <label>Farms:&nbsp;&nbsp;</label>
-                {farms.length > 0 &&
-                    <Select onChange={(value) => { getPurchases(value) }} defaultValue={farms[0].id}>
-                        {farms.map((farm, index) => (
-                            <Option key={index} value={farm.id}>{farm.description}</Option>
-                        ))}
-                    </Select>
-                }
-                {purchases.length > 0 &&
-                <label><br></br>Purchase Id:&nbsp;&nbsp;</label>
-                }
-                {purchases.length > 0 && 
-                    <Select onChange={(value) => { getPurchaseDetails(value) }} defaultValue={farms[0].id}>
-                        {purchases.map((Purchase, index) => (
-                            <Option key={index} value={Purchase.id}>{Purchase.id}</Option>
-                        ))}
-                    </Select>
-                }
-                {purchases.length > 0 && 
+                <div className="d-md-flex justify-content-md-between">
+                    <div>
+                        <h2 className="mb-1 font-weight-semibold">Purchase Detail</h2>
+                        <address>
+                            <label className='mt-3'>&nbsp;&nbsp;Farms:&nbsp;&nbsp;</label>
+                            {farms.length > 0 &&
+                                <Select className='mt-3' onChange={(value) => { getPurchases(value) }} defaultValue={farms[0].id}>
+                                    {farms.map((farm, index) => (
+                                        <Option key={index} value={farm.id}>{farm.description}</Option>
+                                    ))}
+                                </Select>
+                            }
+                            
+                            <label className='mt-3'><br></br>&nbsp;&nbsp;Purchase ID:&nbsp;&nbsp;</label>
+                            {purchases.length > 0 &&
+                                <Select className='mt-3' onChange={(value) => { getPurchaseDetails(value) }} defaultValue = {purchases[0].id}>
+                                    {purchases.map((Purchase, index) => (
+                                        <Option key={index} value={Purchase.id}>Purchase {Purchase.id}</Option>
+                                    ))}
+                                </Select>
+                            }
+                        </address>
+                    </div>
+                    <div className="mt-3 text-right">
+                        <h2 className="mb-1 font-weight-semibold">Farm: {farm?.description}</h2>
+                        <address>
+                            <p>
+                                {purchase &&
+                                <>
+                                <span className="font-weight-semibold text-dark font-size-md">Purchase ID: {purchase.id}</span><br />
+                                <span>Total Price: {purchase.totalPrice}</span>
+                                </>
+                                }
+                            </p>
+                        </address>
+                    </div>
+                </div>
+                <div className="mt-4">
+                    <Table columns={tableColumns} pagination={false} dataSource={purchaseDetails} rowKey='id' />
                     <Button type="primary" onClick={AddBtnClick} style={{ margin: 10 }}>
                         Add
                     </Button>
-                }
-                <div className="table-responsive">
-                    <Table columns={tableColumns} dataSource={purchaseDetails} rowKey='id' />
+                    <div className="d-flex justify-content-end">
+                        <div className="text-right ">
+                            <h2 className="font-weight-semibold mt-3">
+                                <span className="mr-1">Grand Total: ${purchase?.totalPrice}</span>
+                            </h2>
+                        </div>
+                    </div>
+                </div>
+                <hr className="d-print-none"/>
+                <div className="text-right d-print-none">
+                    <Button type="primary" onClick={() => window.print()}>
+                        <PrinterOutlined  type="printer" />
+                        <span className="ml-1">Print</span>
+                    </Button>
                 </div>
             </Card>
             {isModalOpen &&
@@ -360,6 +370,26 @@ const PayDetailList = () => {
                         style={{ marginTop: 20 }}
                         onFinish={mode ? AddPurchaseDetail : EditPurchaseDetail}
                     >
+                        
+                        {purchaseDetails.length < 1 &&
+                        <Form.Item label="Supplier">
+                            <Select defaultValue={suppliers[0].id} onChange={(value) => selectSupplier(value)}>
+                                {suppliers.map((supplier, index) => (
+                                    <Option key={index + 1} value={supplier.id}>{supplier.name}, {supplier.email}</Option>
+                                ))}
+                            </Select>
+                        </Form.Item>
+                        }
+
+                        {purchaseDetails.length < 1 &&
+                        <Form.Item
+                            label="Purchase Date"
+                            name="date"
+                            rules={[{ required: true, message: 'Purchase date is required' }]}
+                        >
+                            <DatePicker format={dateFormat} />
+                        </Form.Item>
+                        }
 
                         <Form.Item
                             label="Product"
